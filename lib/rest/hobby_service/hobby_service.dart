@@ -91,15 +91,18 @@ class HobbyService{
     }
   }
 
-  Future<Object> uploadQuiz(UploadQuizDTO data) async{
-    const endpoint = "/profile/upload_quiz/";
+  Future<Object> uploadQuiz(User user, UploadQuizDTO data) async{
+    const endpoint = "/profile/upload-quiz/";
     final url = Uri.parse('$baseUrl$endpoint');
     try {
       logger.i(url);
       logger.i(data.toJson());
+      String? accessToken = user.token?.access;
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
         body: json.encode(data.toJson()),
       ).timeout(duration);
       logger.i(response.body);

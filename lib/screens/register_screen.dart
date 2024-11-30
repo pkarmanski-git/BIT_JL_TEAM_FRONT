@@ -38,6 +38,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     if (response.error == ServiceErrors.ok) {
+      widget.service.login(emailController.text, passwordController.text);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

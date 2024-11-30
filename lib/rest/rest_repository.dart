@@ -10,6 +10,7 @@ import 'hobby_service/dto/login_dto.dart';
 import 'hobby_service/dto/register_dto.dart';
 import 'hobby_service/dto/token_dto.dart';
 import 'hobby_service/dto/token_refresh_dto.dart';
+import 'hobby_service/dto/upload_quiz_dto.dart';
 import 'hobby_service/hobby_service.dart';
 
 class RestRepository {
@@ -45,9 +46,14 @@ class RestRepository {
     TokenDTO responseDTO = await service.refresh(data);
     return responseDTO;
   }
-// Fetch communities with posts
+
+  Future<Object> uploadQuiz(User user, UploadQuizDTO data) async{
+    Object responseDTO = await service.uploadQuiz(user, data);
+    return responseDTO;
+  }
+
   Future<List<Community>> fetchCommunitiesWithPosts() async {
-    final response = await client.get('${config.baseUrl}/communities'); // Adjust API endpoint
+    final response = await client.get('${config.baseUrl}/communities');
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => Community.fromJson(json)).toList();

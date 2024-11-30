@@ -1,15 +1,19 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jl_team_front_bit/model/question.dart';
 import 'package:jl_team_front_bit/model/user.dart';
 import 'package:jl_team_front_bit/model/community.dart';
+import 'package:jl_team_front_bit/rest/hobby_service/dto/question_dto.dart';
 import 'package:logger/logger.dart';
 
 import '../enums/service_errors.dart';
+import '../model/answer.dart';
 import '../model/service_response.dart';
 import '../model/token.dart';
 import '../rest/hobby_service/dto/login_dto.dart';
 import '../rest/hobby_service/dto/register_dto.dart';
 import '../rest/hobby_service/dto/token_dto.dart';
 import '../rest/hobby_service/dto/token_refresh_dto.dart';
+import '../rest/hobby_service/dto/upload_quiz_dto.dart';
 import '../rest/rest_repository.dart';
 import '../utils/config.dart';
 
@@ -86,9 +90,6 @@ class Service {
 
   Future<ServiceResponse<List<Community>>> fetchCommunitiesWithPosts() async {
     try {
-      if (restRepository == null) {
-        await init();
-      }
       final communities = await restRepository.fetchCommunitiesWithPosts(); // Updated method in RestRepository
       return ServiceResponse(data: communities, error: ServiceErrors.ok);
     } catch (e) {
@@ -96,6 +97,18 @@ class Service {
       return ServiceResponse(data: null, error: ServiceErrors.genericError);
     }
   }
+
+  Future<ServiceResponse> uploadQuiz(List<Answer> answers) async {
+    try {
+      var data = UploadQuizDTO(answers);
+      this.restRepository.uploadQuiz(user, data);
+      return ServiceResponse(data: null, error: ServiceErrors.ok);
+    } catch (e) {
+      logger.e(e.toString());
+      return ServiceResponse(data: null, error: ServiceErrors.genericError);
+    }
+  }
+
 }
 
 

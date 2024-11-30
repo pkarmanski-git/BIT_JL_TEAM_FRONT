@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:jl_team_front_bit/model/service_response.dart';
+import 'package:jl_team_front_bit/screens/swipe_screen.dart';
 import 'package:swipe_cards/swipe_cards.dart';
-import 'dart:convert';
 
+import '../enums/service_errors.dart';
+import '../model/answer.dart';
 import '../model/question.dart';
 import '../service/service.dart';
 
@@ -17,7 +20,7 @@ class QuizScreen extends StatefulWidget {
 class _QuizScreenState extends State<QuizScreen> {
   List<SwipeItem> _swipeItems = [];
   late MatchEngine _matchEngine;
-  List<Map<String, dynamic>> answers = [];
+  List<Answer> answers = [];
 
   final String defaultBackgroundImage = 'assets/images/default_background.png';
 
@@ -100,6 +103,7 @@ class _QuizScreenState extends State<QuizScreen> {
   ];
 
   int currentQuestionIndex = 0;
+  bool isLoading = false;  // Zmienna stanu dla kontrolowania ładowania
 
   Map<String, String> imageStatements = {
     'party.jpg': 'User likes going to parties',
@@ -138,10 +142,7 @@ class _QuizScreenState extends State<QuizScreen> {
   void _recordAnswer(Question question, bool answerValue) {
     String statement = generateStatement(question, answerValue);
 
-    answers.add({
-      'statement': statement,
-      'answer': answerValue,
-    });
+    answers.add(Answer(statement, answerValue));
 
     setState(() {
       currentQuestionIndex++;
@@ -188,15 +189,32 @@ class _QuizScreenState extends State<QuizScreen> {
     return statement;
   }
 
-  void _onQuizComplete() {
-    // String jsonAnswers = jsonEncode({'questions': answers});
+  void _onQuizComplete() async {
+    setState(() {
+      isLoading = true;
+    });
 
-
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => QuizScreen(service: widget.service,)),
-    );
+    try {
+      ServiceResponse response = await widget.service.uploadQuiz(answers);
+      if (response.error == ServiceErrors.ok) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => SwipeScreen(service: widget.service)),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Something went wrong!"))
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("An error occurred!"))
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -233,151 +251,132 @@ class _QuizScreenState extends State<QuizScreen> {
               ],
             ),
           ),
-          Expanded(
-            child: Center(
-              child: _swipeItems.isNotEmpty
-                  ? Stack(
-                children: [
-                  // Gradient tła
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Colors.red.withOpacity(0.3), Colors.transparent],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
+          // Wyświetlanie loadera, jeśli jest w trakcie ładowania
+          if (isLoading)
+            Center(
+              child: CircularProgressIndicator(),
+            )
+          else
+            Expanded(
+              child: Center(
+                child: _swipeItems.isNotEmpty
+                    ? Stack(
+                  children: [
+                    // Gradient tła
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Colors.red.withOpacity(0.3), Colors.transparent],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Colors.transparent, Colors.green.withOpacity(0.3)],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Colors.transparent, Colors.green.withOpacity(0.3)],
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  // Karty SwipeCards
-                  SwipeCards(
-                    matchEngine: _matchEngine,
-                    itemBuilder: (BuildContext context, int index) {
-                      Question question = questions[index];
-                      return Card(
-                        elevation: 6,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                        child: Container(
-                          decoration: BoxDecoration(
+                      ],
+                    ),
+                    // SwipeCards
+                    SwipeCards(
+                      matchEngine: _matchEngine,
+                      itemBuilder: (BuildContext context, int index) {
+                        Question question = questions[index];
+                        return Card(
+                          elevation: 6,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
-                            image: question.isImageQuestion
-                                ? null // Brak tła dla pytań z obrazkiem
-                                : DecorationImage(
-                              image: AssetImage(
-                                question.imagePath ?? defaultBackgroundImage,
-                              ),
-                              fit: BoxFit.cover,
-                              colorFilter: ColorFilter.mode(
-                                Colors.black.withOpacity(0.4),
-                                BlendMode.darken,
-                              ),
-                            ),
                           ),
-                          child: question.isImageQuestion
-                              ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Expanded(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(16),
-                                    topRight: Radius.circular(16),
-                                  ),
-                                  child: Image.asset(
-                                    question.imagePath!,
-                                    fit: BoxFit.cover,
-                                  ),
+                          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              image: question.isImageQuestion
+                                  ? null
+                                  : DecorationImage(
+                                image: AssetImage(
+                                  question.imagePath ?? defaultBackgroundImage,
+                                ),
+                                fit: BoxFit.cover,
+                                colorFilter: ColorFilter.mode(
+                                  Colors.black.withOpacity(0.4),
+                                  BlendMode.darken,
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(16.0),
+                            ),
+                            child: question.isImageQuestion
+                                ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(16),
+                                      topRight: Radius.circular(16),
+                                    ),
+                                    child: Image.asset(
+                                      question.imagePath!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Text(
+                                    question.text,
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            )
+                                : Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(24.0),
                                 child: Text(
                                   question.text,
                                   style: TextStyle(
-                                    fontSize: 24,
-                                    color: Colors.black,
+                                    fontSize: 28,
+                                    color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                            ],
-                          )
-                              : Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(24.0),
-                              child: Text(
-                                question.text,
-                                style: TextStyle(
-                                  fontSize: 28,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                    onStackFinished: () {
-                      if (answers.length < questions.length) {
-                        _onQuizComplete();
-                      }
-                    },
-                    upSwipeAllowed: false,
-                    fillSpace: true,
-                  ),
-                ],
-              )
-                  : Text('No questions available'),
+                        );
+                      },
+                      onStackFinished: () {
+                        if (answers.length < questions.length) {
+                          _onQuizComplete();
+                        }
+                      },
+                      upSwipeAllowed: false,
+                      fillSpace: true,
+                    ),
+                  ],
+                )
+                    : Text('No questions available'),
+              ),
             ),
-          ),
         ],
-      ),
-    );
-  }
-}
-
-// Zakładam, że masz gotowy ekran ThankYouPage
-class ThankYouPage extends StatelessWidget {
-  final String jsonAnswers;
-
-  ThankYouPage(this.jsonAnswers);
-
-  @override
-  Widget build(BuildContext context) {
-    // Możesz obsłużyć dane JSON według potrzeb
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Thank You'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Text(
-          'Thank you for completing the quiz!',
-          style: TextStyle(fontSize: 24),
-          textAlign: TextAlign.center,
-        ),
       ),
     );
   }
