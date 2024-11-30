@@ -1,3 +1,3 @@
 enum ServiceErrors{
-  ok, loginError, serviceError, genericError
+  ok, loginError, serviceError, genericError, networkError, unauthorized, serverError
 }

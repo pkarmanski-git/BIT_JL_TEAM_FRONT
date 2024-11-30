@@ -1,11 +1,9 @@
 import 'dart:ui'; // Required for blur effect
 import 'package:flutter/material.dart';
 import 'package:jl_team_front_bit/screens/register_screen.dart';
-import 'package:jl_team_front_bit/screens/swipe_screen.dart';
+import 'package:jl_team_front_bit/screens/login_screen.dart';
 import '../constants/colors.dart';
 import '../service/service.dart';
-import 'communities_screen.dart';
-import 'login_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   final Service service;
@@ -100,62 +98,6 @@ class WelcomeScreen extends StatelessWidget {
                     },
                     child: Text(
                       'Create an account',
-                      style: TextStyle(
-                        color: AppColors.buttonTextColor,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.secondaryColor,
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CommunitiesScreen(service: service),
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      'Explore Communities',
-                      style: TextStyle(
-                        color: AppColors.buttonTextColor,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ),
-                // Test SwipeScreen button
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40.0), // Same padding for consistency
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.secondaryColor,
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SwipeScreen(service: service),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Test Swipe Screen',
                       style: TextStyle(
                         color: AppColors.buttonTextColor,
                         fontSize: 18,
