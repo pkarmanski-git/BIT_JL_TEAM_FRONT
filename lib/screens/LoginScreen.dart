@@ -3,16 +3,34 @@ import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import '../service/service.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   final Service service;
 
   const LoginScreen({super.key, required this.service});
 
   @override
-  Widget build(BuildContext context) {
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
+  _LoginScreenState createState() => _LoginScreenState();
+}
 
+class _LoginScreenState extends State<LoginScreen> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  bool isLoading = false;
+
+  Future<void> _login() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    await widget.service.login(emailController.text, passwordController.text);
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
@@ -78,10 +96,14 @@ class LoginScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(25),
                       ),
                     ),
-                    onPressed: () {
-                      service.login(emailController.text, passwordController.text);
-                    },
-                    child: Text(
+                    onPressed: isLoading
+                        ? null
+                        : _login,
+                    child: isLoading
+                        ? CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.buttonTextColor),
+                    )
+                        : Text(
                       'Log In',
                       style: TextStyle(
                         color: AppColors.buttonTextColor,

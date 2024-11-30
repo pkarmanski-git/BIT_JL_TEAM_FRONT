@@ -39,6 +39,9 @@ class Service {
 
   Future<ServiceResponse> login(String email, String password) async{
     try{
+      if (restRepository == null) {
+        await init();
+      }
       var loginDTO = LoginDTO(email: email, password: password);
       TokenDTO login = await restRepository.login(loginDTO);
       user.token = Token(access: login.access, refresh: login.refresh);

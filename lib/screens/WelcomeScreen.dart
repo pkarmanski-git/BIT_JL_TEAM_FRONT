@@ -2,6 +2,7 @@ import 'dart:ui'; // Required for blur effect
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import '../service/service.dart';
+import 'LoginScreen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   final Service service;
@@ -58,7 +59,12 @@ class WelcomeScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/login');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginScreen(service: service), // Use 'service' directly
+                        ),
+                      );
                     },
                     child: Text(
                       'Log In',

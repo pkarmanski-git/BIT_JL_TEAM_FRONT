@@ -35,7 +35,7 @@ class HobbyService{
   }
 
   Future<TokenDTO> login(LoginDTO data) async {
-    const endpoint = "/auth/token/";
+    const endpoint = "/auth/login/";
     final url = Uri.parse('$baseUrl$endpoint');
     try {
       logger.i(url);

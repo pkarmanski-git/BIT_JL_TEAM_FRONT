@@ -23,19 +23,22 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    widget.service.init();
+    _initializeService();
+  }
 
+  Future<void> _initializeService() async {
     _controller = AnimationController(
-      duration: const Duration(seconds: 4),
+      duration: const Duration(seconds: 2),
       vsync: this,
     );
 
-    _animation = Tween<double>(begin: 6.0, end: 2.5).animate(
+    _animation = Tween<double>(begin: 6.0, end: 4.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
     _controller.forward();
-    Future.delayed(const Duration(seconds: 5), () {
+    await widget.service.init();
+    Future.delayed(const Duration(seconds: 3), () {
       _navigateToWelcomeScreen();
     });
   }
