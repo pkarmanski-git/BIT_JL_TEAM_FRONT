@@ -1,5 +1,7 @@
 import 'dart:ui'; // Required for blur effect
 import 'package:flutter/material.dart';
+import 'package:jl_team_front_bit/screens/RegisterScreen.dart';
+import 'package:jl_team_front_bit/screens/SwipeScreen.dart';
 import '../constants/colors.dart';
 import '../service/service.dart';
 import 'LoginScreen.dart';
@@ -88,7 +90,12 @@ class WelcomeScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/register');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RegisterScreen(service: service),
+                        ),
+                      );
                     },
                     child: Text(
                       'Create an account',
@@ -112,7 +119,12 @@ class WelcomeScreen extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/swipe');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SwipeScreen(service: service),
+                        ),
+                      );
                     },
                     child: Text(
                       'Test Swipe Screen',

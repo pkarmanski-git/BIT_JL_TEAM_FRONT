@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import '../model/hobby_swipe.dart';
 import '../constants/colors.dart';
+import '../service/service.dart';
 
 class SwipeScreen extends StatefulWidget {
-  const SwipeScreen({super.key});
+  final Service service;
+
+  const SwipeScreen({
+    super.key,
+    required this.service,
+  });
+
 
   @override
   _SwipeScreenState createState() => _SwipeScreenState();
