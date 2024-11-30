@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jl_team_front_bit/screens/swipe_screen.dart';
 
 import '../service/service.dart';
 import 'account_screen.dart';
@@ -16,6 +17,7 @@ class NavigatorScreen extends StatefulWidget {
 class _NavigatorState extends State<NavigatorScreen> {
   int _selectedIndex = 0;
   late AccountScreen accountScreen;
+  late SwipeScreen swipeScreen;
 
   late List<Widget> _pages;
 
@@ -23,9 +25,10 @@ class _NavigatorState extends State<NavigatorScreen> {
   void initState() {
     super.initState();
     accountScreen = AccountScreen();
+    swipeScreen = SwipeScreen(service: widget.service);
     _pages = <Widget>[
       accountScreen,
-      accountScreen,
+      swipeScreen,
       accountScreen
     ];
   }
