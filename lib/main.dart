@@ -6,6 +6,7 @@ import 'package:jl_team_front_bit/screens/WelcomeScreen.dart';
 import 'package:jl_team_front_bit/service/service.dart';
 import 'screens/SplashScreen.dart';
 import 'constants/colors.dart';
+import 'screens/SwipeScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -35,7 +36,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(service: service),
         '/register': (context) => RegisterScreen(service: service),
         '/aboutme': (context) => AboutMeScreen(service: service),
-      },
+          '/swipe': (context) => const SwipeScreen(),
+        },
     );
   }
 }

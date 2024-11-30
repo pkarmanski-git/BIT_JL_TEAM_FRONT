@@ -26,16 +26,16 @@ class _SplashScreenState extends State<SplashScreen>
     widget.service.init();
 
     _controller = AnimationController(
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 4),
       vsync: this,
     );
 
-    _animation = Tween<double>(begin: 6.0, end: 4.0).animate(
+    _animation = Tween<double>(begin: 6.0, end: 2.5).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
     _controller.forward();
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 5), () {
       _navigateToWelcomeScreen();
     });
   }

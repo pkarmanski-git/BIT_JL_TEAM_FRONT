@@ -42,7 +42,7 @@ class WelcomeScreen extends StatelessWidget {
                   tag: 'logo', // Matching tag for Hero animation
                   child: Image.asset(
                     'assets/logo.png', // Path to your logo
-                    height: 400, // Adjust the size as needed
+                    height: 200, // Adjust the size as needed
                   ),
                 ),
                 const SizedBox(height: 40),
@@ -86,6 +86,30 @@ class WelcomeScreen extends StatelessWidget {
                     },
                     child: Text(
                       'Create an account',
+                      style: TextStyle(
+                        color: AppColors.buttonTextColor,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Test SwipeScreen button
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40.0), // Same padding for consistency
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.secondaryColor,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/swipe');
+                    },
+                    child: Text(
+                      'Test Swipe Screen',
                       style: TextStyle(
                         color: AppColors.buttonTextColor,
                         fontSize: 18,
