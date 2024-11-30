@@ -23,6 +23,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+    widget.service.init();
 
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
