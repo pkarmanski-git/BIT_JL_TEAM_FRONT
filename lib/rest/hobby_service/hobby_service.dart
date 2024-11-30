@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:jl_team_front_bit/rest/hobby_service/dto/upload_quiz_dto.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
@@ -74,6 +75,24 @@ class HobbyService{
 
   Future<TokenDTO> refresh(TokenRefreshDTO data) async {
     const endpoint = "/auth/token/refresh/";
+    final url = Uri.parse('$baseUrl$endpoint');
+    try {
+      logger.i(url);
+      logger.i(data.toJson());
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(data.toJson()),
+      ).timeout(duration);
+      logger.i(response.body);
+      return TokenDTO.fromJson(json.decode(response.body));
+    } catch (e) {
+      throw Exception('Error in POST request: $e');
+    }
+  }
+
+  Future<Object> uploadQuiz(UploadQuizDTO data) async{
+    const endpoint = "/profile/upload_quiz/";
     final url = Uri.parse('$baseUrl$endpoint');
     try {
       logger.i(url);

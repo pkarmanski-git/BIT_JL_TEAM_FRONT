@@ -189,12 +189,13 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   void _onQuizComplete() {
-    String jsonAnswers = jsonEncode({'questions': answers});
-    print(jsonAnswers);
+    // String jsonAnswers = jsonEncode({'questions': answers});
+
+
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => ThankYouPage(jsonAnswers)),
+      MaterialPageRoute(builder: (context) => QuizScreen(service: widget.service,)),
     );
   }
 
