@@ -19,10 +19,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>(); // Form key for validation
 
   bool isLoading = false;
 
   Future<void> _register() async {
+    if (!_formKey.currentState!.validate()) {
+      return; // Stop registration if the form is invalid
+    }
+
     setState(() {
       isLoading = true;
     });
@@ -47,9 +52,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred during registration')),
+        const SnackBar(content: Text('An error occurred during registration')),
       );
     }
+  }
+
+  String? _validateEmail(String? value) {
+    final emailRegExp =
+    RegExp(r'^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
+    if (value == null || value.isEmpty) {
+      return 'Email is required';
+    } else if (!emailRegExp.hasMatch(value)) {
+      return 'Enter a valid email address';
+    }
+    return null;
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    } else if (value.length < 8) {
+      return 'Password must be at least 8 characters long';
+    }
+    return null;
+  }
+
+  String? _validateConfirmPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Confirm your password';
+    } else if (value != passwordController.text) {
+      return 'Passwords do not match';
+    }
+    return null;
   }
 
   @override
@@ -77,59 +111,65 @@ class _RegisterScreenState extends State<RegisterScreen> {
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  // Header text
-                  Text(
-                    'Create your account',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColors.textColor,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
+              child: Form(
+                key: _formKey, // Attach form key
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    // Header text
+                    Text(
+                      'Create your account',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: AppColors.textColor,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 30),
-                  // Email field
-                  TextField(
-                    controller: emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: Icon(Icons.email),
+                    const SizedBox(height: 30),
+                    // Email field
+                    TextFormField(
+                      controller: emailController,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        prefixIcon: Icon(Icons.email),
+                      ),
+                      keyboardType: TextInputType.emailAddress,
+                      validator: _validateEmail, // Attach email validator
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  const SizedBox(height: 10),
-                  // Password field
-                  TextField(
-                    controller: passwordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: Icon(Icons.lock),
+                    const SizedBox(height: 10),
+                    // Password field
+                    TextFormField(
+                      controller: passwordController,
+                      decoration: const InputDecoration(
+                        labelText: 'Password',
+                        prefixIcon: Icon(Icons.lock),
+                      ),
+                      obscureText: true,
+                      validator: _validatePassword, // Attach password validator
                     ),
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 10),
-                  // Confirm Password field
-                  TextField(
-                    controller: confirmPasswordController,
-                    decoration: const InputDecoration(
-                      labelText: 'Confirm Password',
-                      prefixIcon: Icon(Icons.lock_outline),
+                    const SizedBox(height: 10),
+                    // Confirm Password field
+                    TextFormField(
+                      controller: confirmPasswordController,
+                      decoration: const InputDecoration(
+                        labelText: 'Confirm Password',
+                        prefixIcon: Icon(Icons.lock_outline),
+                      ),
+                      obscureText: true,
+                      validator: _validateConfirmPassword, // Attach confirm password validator
                     ),
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 30),
-                ],
+                    const SizedBox(height: 30),
+                  ],
+                ),
               ),
             ),
           ),
           // Positioned Register button at the bottom
           Positioned(
             bottom: 30, // Distance from bottom edge of screen
-            left: 40,   // Same left padding as the other elements
-            right: 40,  // Same right padding as the other elements
+            left: 40, // Same left padding as the other elements
+            right: 40, // Same right padding as the other elements
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.buttonColor,
@@ -138,9 +178,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   borderRadius: BorderRadius.circular(25),
                 ),
               ),
-              onPressed: isLoading ? null : _register, // Wywołanie _register, jeśli nie trwa ładowanie
+              onPressed: isLoading ? null : _register, // Call _register if not loading
               child: isLoading
-                  ? CircularProgressIndicator(color: AppColors.buttonTextColor) // Wskaźnik ładowania
+                  ? CircularProgressIndicator(color: AppColors.buttonTextColor)
                   : Text(
                 'Create Account',
                 style: TextStyle(
