@@ -15,12 +15,12 @@ class BottomNavigationBarComponent extends StatelessWidget {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.quiz),
+          icon: Icon(Icons.favorite),
           label: 'My hobbies',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.history),
-          label: 'Hobbies',
+          icon: Icon(Icons.explore),
+          label: 'Explore hobbies',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),

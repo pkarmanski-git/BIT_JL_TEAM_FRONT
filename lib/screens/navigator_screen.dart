@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'account_screen.dart';
 import 'bottom_navigation_panel.dart';
 
 class NavigatorScreen extends StatefulWidget {
@@ -11,6 +12,7 @@ class NavigatorScreen extends StatefulWidget {
 
 class _NavigatorState extends State<NavigatorScreen> {
   int _selectedIndex = 0;
+  late AccountScreen accountScreen;
   // late QuizGeneratorScreen quizGeneratorScreen;
   // late HistoryScreen historyScreen;
   // late AuthScreen authScreen;
@@ -20,10 +22,13 @@ class _NavigatorState extends State<NavigatorScreen> {
   @override
   void initState() {
     super.initState();
-    // quizGeneratorScreen = QuizGeneratorScreen(mainController: widget.mainController);
+    accountScreen = AccountScreen();
     // historyScreen = HistoryScreen(mainController: widget.mainController);
     // authScreen = AuthScreen(mainController: widget.mainController);
     _pages = <Widget>[
+      accountScreen,
+      accountScreen,
+      accountScreen
       // quizGeneratorScreen,
       // historyScreen,
       // authScreen
