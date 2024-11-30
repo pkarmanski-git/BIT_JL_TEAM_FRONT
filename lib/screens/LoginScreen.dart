@@ -1,7 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:jl_team_front_bit/enums/service_errors.dart';
 import '../constants/colors.dart';
+import '../model/service_response.dart';
 import '../service/service.dart';
+import 'navigator_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final Service service;
@@ -22,11 +25,22 @@ class _LoginScreenState extends State<LoginScreen> {
       isLoading = true;
     });
 
-    await widget.service.login(emailController.text, passwordController.text);
+    ServiceResponse response = await widget.service.login(emailController.text, passwordController.text);
 
     setState(() {
       isLoading = false;
     });
+
+    if (response.error == ServiceErrors.ok) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => NavigatorScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred')),
+      );
+    }
   }
 
   @override

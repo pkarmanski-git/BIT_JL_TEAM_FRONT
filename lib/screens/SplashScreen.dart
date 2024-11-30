@@ -21,9 +21,9 @@ class _SplashScreenState extends State<SplashScreen>
   late Animation<double> _animation;
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
-    _initializeService();
+    await _initializeService();
   }
 
   Future<void> _initializeService() async {
