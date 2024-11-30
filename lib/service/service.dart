@@ -1,5 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jl_team_front_bit/model/user.dart';
+import 'package:jl_team_front_bit/model/community.dart';
 import 'package:logger/logger.dart';
 
 import '../enums/service_errors.dart';
@@ -11,7 +12,7 @@ import '../rest/hobby_service/dto/token_dto.dart';
 import '../rest/hobby_service/dto/token_refresh_dto.dart';
 import '../rest/rest_repository.dart';
 import '../utils/config.dart';
-
+import '../service/service.dart';
 class Service {
   final Logger logger = Logger();
   final User user = User();
@@ -78,4 +79,20 @@ class Service {
       return ServiceResponse(data: null, error: ServiceErrors.loginError);
     }
   }
+
+  Future<ServiceResponse<List<Community>>> fetchCommunitiesWithPosts() async {
+    try {
+      if (restRepository == null) {
+        await init();
+      }
+      final communities = await restRepository.fetchCommunitiesWithPosts(); // Updated method in RestRepository
+      return ServiceResponse(data: communities, error: ServiceErrors.ok);
+    } catch (e) {
+      logger.e(e.toString());
+      return ServiceResponse(data: null, error: ServiceErrors.genericError);
+    }
+  }
 }
+
+
+

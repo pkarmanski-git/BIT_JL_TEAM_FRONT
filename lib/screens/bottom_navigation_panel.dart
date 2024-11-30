@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-
 class BottomNavigationBarComponent extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onItemTapped;
 
-  const BottomNavigationBarComponent({super.key,
+  const BottomNavigationBarComponent({
+    super.key,
     required this.selectedIndex,
     required this.onItemTapped,
   });
@@ -15,12 +15,12 @@ class BottomNavigationBarComponent extends StatelessWidget {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
-          label: 'My hobbies',
+          icon: Icon(Icons.people),
+          label: 'My Communities',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.explore),
-          label: 'Explore hobbies',
+          label: 'Explore Hobbies',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
