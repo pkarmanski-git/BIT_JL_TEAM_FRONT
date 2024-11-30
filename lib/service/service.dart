@@ -26,9 +26,9 @@ class Service {
     config = await loadConfig();
     restRepository = RestRepository(config: config);
     String? refreshToken = await storage.read(key: 'refreshToken');
-    // if(refreshToken != null && refreshToken != "") {
-    //   await this.refreshToken(refreshToken);
-    // }
+    if(refreshToken != null && refreshToken != "") {
+      await this.refreshToken(refreshToken);
+    }
   }
 
 
