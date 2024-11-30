@@ -24,7 +24,7 @@ class _NavigatorState extends State<NavigatorScreen> {
   @override
   void initState() {
     super.initState();
-    accountScreen = AccountScreen();
+    accountScreen = AccountScreen(service: widget.service);
     swipeScreen = SwipeScreen(service: widget.service);
     _pages = <Widget>[
       accountScreen,

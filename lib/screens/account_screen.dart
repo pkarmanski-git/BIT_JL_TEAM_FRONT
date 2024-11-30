@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:jl_team_front_bit/enums/service_errors.dart';
+import 'package:jl_team_front_bit/model/service_response.dart';
+import 'package:jl_team_front_bit/screens/welcome_screen.dart';
+import '../service/service.dart';
 
 class AccountScreen extends StatelessWidget {
-  const AccountScreen({super.key});
+  final Service service;
+
+  const AccountScreen({super.key, required this.service});
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +52,17 @@ class AccountScreen extends StatelessWidget {
     );
   }
 
-  void _logout(BuildContext context) {
-    // Implement any logout logic here, such as clearing session or tokens
-
-    // Navigate to WelcomeScreen and clear the navigation stack
-    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+  void _logout(BuildContext context) async{
+    ServiceResponse response = await service.logout();
+    if(response.error == ServiceErrors.ok){
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => WelcomeScreen(service: service)),
+      );
+    }else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred')),
+      );
+    }
   }
 }
