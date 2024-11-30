@@ -4,6 +4,8 @@ import 'package:jl_team_front_bit/screens/swipe_screen.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 
 import '../enums/service_errors.dart';
+import '../factories/image_factory.dart';
+import '../factories/question_factory.dart';
 import '../model/answer.dart';
 import '../model/question.dart';
 import '../service/service.dart';
@@ -24,101 +26,12 @@ class _QuizScreenState extends State<QuizScreen> {
 
   final String defaultBackgroundImage = 'assets/images/default_background.png';
 
-  List<Question> questions = [
-    Question(text: 'Do you enjoy being the center of attention?'),
-    Question(
-      text: 'Does this image suit you?',
-      imagePath: 'assets/images/party.jpg',
-      isImageQuestion: true,
-    ),
-    Question(text: 'Do you prefer planning over spontaneity?'),
-    Question(
-      text: 'Does this image suit you?',
-      imagePath: 'assets/images/reading.jpg',
-      isImageQuestion: true,
-    ),
-    Question(text: 'Is it easy for you to empathize with others?'),
-    Question(
-      text: 'Does this image suit you?',
-      imagePath: 'assets/images/volunteer.jpeg',
-      isImageQuestion: true,
-    ),
-    Question(text: 'Do you feel comfortable taking risks?'),
-    Question(
-      text: 'Does this image suit you?',
-      imagePath: 'assets/images/skydiving.jpg',
-      isImageQuestion: true,
-    ),
-    Question(text: 'Do you feel energized after social interactions?'),
-    Question(
-      text: 'Does this image suit you?',
-      imagePath: 'assets/images/concert.jpg',
-      isImageQuestion: true,
-    ),
-    Question(text: 'Do you trust your intuition when making decisions?'),
-    Question(
-      text: 'Does this image suit you?',
-      imagePath: 'assets/images/compass.jpg',
-      isImageQuestion: true,
-    ),
-    Question(text: 'Do you prefer working in a structured environment?'),
-    Question(
-      text: 'Does this image suit you?',
-      imagePath: 'assets/images/office.jpg',
-      isImageQuestion: true,
-    ),
-    Question(text: 'Do you often contemplate the deeper meaning of life?'),
-    Question(
-      text: 'Does this image suit you?',
-      imagePath: 'assets/images/stargazing.jpg',
-      isImageQuestion: true,
-    ),
-    Question(text: 'Are you comfortable adapting to new situations?'),
-    Question(text: 'Do you enjoy exploring new places?'),
-    Question(text: 'Do you find it easy to express your feelings?'),
-    Question(
-      text: 'Does this image suit you?',
-      imagePath: 'assets/images/artist.jpg',
-      isImageQuestion: true,
-    ),
-    Question(text: 'Do you prefer to work alone rather than in a team?'),
-    Question(
-      text: 'Does this image suit you?',
-      imagePath: 'assets/images/teamwork.jpg',
-      isImageQuestion: true,
-    ),
-    Question(text: 'Are you detail-oriented?'),
-    Question(
-      text: 'Does this image suit you?',
-      imagePath: 'assets/images/puzzle.jpg',
-      isImageQuestion: true,
-    ),
-    Question(text: 'Do you enjoy taking the lead in group activities?'),
-    Question(
-      text: 'Does this image suit you?',
-      imagePath: 'assets/images/leader.jpg',
-      isImageQuestion: true,
-    ),
-    Question(text: 'Do you often set goals for yourself?'),
-  ];
+  List<Question> questions = QuestionFactory.createQuestions();
 
   int currentQuestionIndex = 0;
-  bool isLoading = false;  // Zmienna stanu dla kontrolowania ładowania
+  bool isLoading = false;
 
-  Map<String, String> imageStatements = {
-    'party.jpg': 'User likes going to parties',
-    'reading.jpg': 'User enjoys reading',
-    'volunteer.jpeg': 'User likes volunteering',
-    'skydiving.jpg': 'User is interested in skydiving',
-    'concert.jpg': 'User enjoys attending concerts',
-    'compass.jpg': 'User trusts their intuition',
-    'office.jpg': 'User prefers structured environments',
-    'stargazing.jpg': 'User often contemplates the meaning of life',
-    'artist.jpg': 'User finds it easy to express feelings',
-    'teamwork.jpg': 'User prefers to work in teams',
-    'puzzle.jpg': 'User is detail-oriented',
-    'leader.jpg': 'User enjoys taking the lead in group activities',
-  };
+  Map<String, String> imageStatements = ImageStatementFactory.createImageStatements();
 
   @override
   void initState() {

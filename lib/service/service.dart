@@ -1,8 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:jl_team_front_bit/model/question.dart';
 import 'package:jl_team_front_bit/model/user.dart';
 import 'package:jl_team_front_bit/model/community.dart';
-import 'package:jl_team_front_bit/rest/hobby_service/dto/question_dto.dart';
 import 'package:logger/logger.dart';
 
 import '../enums/service_errors.dart';
