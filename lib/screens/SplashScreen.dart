@@ -15,15 +15,14 @@ class SplashScreen extends StatefulWidget {
   _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
-    await _initializeService();
+    _initializeService();
   }
 
   Future<void> _initializeService() async {
@@ -37,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _controller.forward();
-    await widget.service.init();
+
     Future.delayed(const Duration(seconds: 3), () {
       _navigateToWelcomeScreen();
     });

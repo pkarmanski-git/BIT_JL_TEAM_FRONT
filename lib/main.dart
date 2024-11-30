@@ -3,14 +3,21 @@ import 'package:jl_team_front_bit/service/service.dart';
 import 'screens/SplashScreen.dart';
 import 'constants/colors.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final service = Service();
+  await service.init();
+
+  runApp(MyApp(service: service));
 }
 
 class MyApp extends StatelessWidget {
+  final Service service;
+
+  const MyApp({Key? key, required this.service}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    Service service = Service();
     return MaterialApp(
       title: 'Hobby Finder',
       theme: ThemeData(

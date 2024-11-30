@@ -13,9 +13,6 @@ class NavigatorScreen extends StatefulWidget {
 class _NavigatorState extends State<NavigatorScreen> {
   int _selectedIndex = 0;
   late AccountScreen accountScreen;
-  // late QuizGeneratorScreen quizGeneratorScreen;
-  // late HistoryScreen historyScreen;
-  // late AuthScreen authScreen;
 
   late List<Widget> _pages;
 
@@ -23,15 +20,10 @@ class _NavigatorState extends State<NavigatorScreen> {
   void initState() {
     super.initState();
     accountScreen = AccountScreen();
-    // historyScreen = HistoryScreen(mainController: widget.mainController);
-    // authScreen = AuthScreen(mainController: widget.mainController);
     _pages = <Widget>[
       accountScreen,
       accountScreen,
       accountScreen
-      // quizGeneratorScreen,
-      // historyScreen,
-      // authScreen
     ];
   }
 
