@@ -1,44 +1,58 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:jl_team_front_bit/screens/quiz_screen.dart';
 import '../constants/colors.dart';
-import 'package:http/http.dart' as http;
+import '../enums/service_errors.dart';
+import '../model/service_response.dart';
 import '../service/service.dart';
 
-class RegisterScreen extends StatelessWidget {
-  final Service service;  // Dodaj Service jako pole
+class RegisterScreen extends StatefulWidget {
+  final Service service;
 
-  // Konstruktor przyjmujący Service jako argument
   const RegisterScreen({super.key, required this.service});
 
-  Future<void> _register(String email, String password, String confirmPassword) async {
-    if (password != confirmPassword) {
-      print('Passwords do not match!');
-      return;
-    }
+  @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
 
-    final response = await http.post(
-      Uri.parse('https://twoj-backend.com/api/register'),
-      body: {
-        'email': email,
-        'password': password,
-      },
+class _RegisterScreenState extends State<RegisterScreen> {
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+
+  bool isLoading = false;
+
+  Future<void> _register() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    ServiceResponse response = await widget.service.register(
+      emailController.text,
+      passwordController.text,
+      confirmPasswordController.text,
     );
 
-    if (response.statusCode == 200) {
-      // Obsługa rejestracji
-      print('Registration successful!');
+    setState(() {
+      isLoading = false;
+    });
+
+    if (response.error == ServiceErrors.ok) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => QuizScreen(service: widget.service),
+        ),
+      );
     } else {
-      // Obsługa błędów
-      print('Registration error: ${response.body}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred during registration')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final emailController = TextEditingController();
-    final passwordController = TextEditingController();
-    final confirmPasswordController = TextEditingController();
-
     return Scaffold(
       body: Stack(
         children: [
@@ -106,31 +120,32 @@ class RegisterScreen extends StatelessWidget {
                     obscureText: true,
                   ),
                   const SizedBox(height: 30),
-                  // Register button
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.buttonColor,
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                    ),
-                    onPressed: () {
-                      _register(
-                        emailController.text,
-                        passwordController.text,
-                        confirmPasswordController.text,
-                      );
-                    },
-                    child: Text(
-                      'Create Account',
-                      style: TextStyle(
-                        color: AppColors.buttonTextColor,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
                 ],
+              ),
+            ),
+          ),
+          // Positioned Register button at the bottom
+          Positioned(
+            bottom: 30, // Distance from bottom edge of screen
+            left: 40,   // Same left padding as the other elements
+            right: 40,  // Same right padding as the other elements
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.buttonColor,
+                minimumSize: const Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+              ),
+              onPressed: isLoading ? null : _register, // Wywołanie _register, jeśli nie trwa ładowanie
+              child: isLoading
+                  ? CircularProgressIndicator(color: AppColors.buttonTextColor) // Wskaźnik ładowania
+                  : Text(
+                'Create Account',
+                style: TextStyle(
+                  color: AppColors.buttonTextColor,
+                  fontSize: 18,
+                ),
               ),
             ),
           ),

@@ -26,15 +26,15 @@ class Service {
     config = await loadConfig();
     restRepository = RestRepository(config: config);
     String? refreshToken = await storage.read(key: 'refreshToken');
-    if(refreshToken != null && refreshToken != "") {
-      await this.refreshToken(refreshToken);
-    }
+    // if(refreshToken != null && refreshToken != "") {
+    //   await this.refreshToken(refreshToken);
+    // }
   }
 
 
-  Future<ServiceResponse> register(String userName, String email, String password, String repeatedPassword) async{
+  Future<ServiceResponse> register(String email, String password, String repeatedPassword) async{
     try{
-      RegisterDTO registerDTO = RegisterDTO(userName, email, password, repeatedPassword);
+      RegisterDTO registerDTO = RegisterDTO(email, password, repeatedPassword);
       await restRepository.register(registerDTO);
       return ServiceResponse(data: null, error: ServiceErrors.ok);
     }catch (e){

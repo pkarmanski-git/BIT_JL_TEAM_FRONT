@@ -1,31 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/swipe_cards.dart';
-import 'dart:convert'; // Do kodowania JSON
+import 'dart:convert';
 
-class Question {
-  final String text;
-  final String? imagePath; // Opcjonalna ścieżka do obrazka
-  final bool isImageQuestion; // Czy pytanie jest typu obrazkowego
+import '../model/question.dart';
+import '../service/service.dart';
 
-  Question({required this.text, this.imagePath, this.isImageQuestion = false});
-}
+class QuizScreen extends StatefulWidget {
+  final Service service;
 
-class QuizPage extends StatefulWidget {
+  const QuizScreen({super.key, required this.service});
+
   @override
-  _QuizPageState createState() => _QuizPageState();
+  _QuizScreenState createState() => _QuizScreenState();
 }
 
-class _QuizPageState extends State<QuizPage> {
+class _QuizScreenState extends State<QuizScreen> {
   List<SwipeItem> _swipeItems = [];
   late MatchEngine _matchEngine;
-  List<Map<String, dynamic>> answers = []; // Lista do przechowywania par pytanie-odpowiedź
+  List<Map<String, dynamic>> answers = [];
 
-  // Domyślne tło dla kart z pytaniami bez obrazka
   final String defaultBackgroundImage = 'assets/images/default_background.png';
 
-  // Lista pytań
   List<Question> questions = [
-    // 25 pytań przeplatanych
     Question(text: 'Do you enjoy being the center of attention?'),
     Question(
       text: 'Does this image suit you?',
@@ -103,7 +99,7 @@ class _QuizPageState extends State<QuizPage> {
     Question(text: 'Do you often set goals for yourself?'),
   ];
 
-  int currentQuestionIndex = 0; // Do śledzenia postępu
+  int currentQuestionIndex = 0;
 
   Map<String, String> imageStatements = {
     'party.jpg': 'User likes going to parties',
@@ -118,7 +114,6 @@ class _QuizPageState extends State<QuizPage> {
     'teamwork.jpg': 'User prefers to work in teams',
     'puzzle.jpg': 'User is detail-oriented',
     'leader.jpg': 'User enjoys taking the lead in group activities',
-    // Dodaj inne mapowania według potrzeb
   };
 
   @override
@@ -163,7 +158,6 @@ class _QuizPageState extends State<QuizPage> {
       String imageName = question.imagePath!.split('/').last;
       statement = imageStatements[imageName] ?? 'Unknown preference';
       if (!answerValue) {
-        // Przekształć stwierdzenie na negatywne
         if (statement.startsWith('User ')) {
           statement = statement.replaceFirst('User ', 'User does not ');
         } else {
@@ -171,15 +165,12 @@ class _QuizPageState extends State<QuizPage> {
         }
       }
     } else {
-      // Dla pytań tekstowych
       statement = question.text;
 
-      // Usuń znak zapytania na końcu
       if (statement.endsWith('?')) {
         statement = statement.substring(0, statement.length - 1);
       }
 
-      // Prosta transformacja pytania na stwierdzenie
       if (statement.startsWith('Do you ')) {
         statement = statement.replaceFirst('Do you ', '');
         statement = 'User ' + (answerValue ? '' : 'does not ') + statement;
@@ -190,7 +181,6 @@ class _QuizPageState extends State<QuizPage> {
         statement = statement.replaceFirst('Is it ', '');
         statement = 'It is ' + (answerValue ? '' : 'not ') + statement + ' for the user';
       } else {
-        // Domyślny przypadek
         statement = 'User ' + (answerValue ? '' : 'does not ') + statement;
       }
     }
@@ -199,12 +189,9 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   void _onQuizComplete() {
-    // Konwersja odpowiedzi do JSON
     String jsonAnswers = jsonEncode({'questions': answers});
-    // Możesz wysłać `jsonAnswers` do backendu tutaj
     print(jsonAnswers);
 
-    // Przejdź do ekranu podziękowania
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => ThankYouPage(jsonAnswers)),
@@ -221,7 +208,6 @@ class _QuizPageState extends State<QuizPage> {
       ),
       body: Column(
         children: [
-          // Pasek postępu z tekstem
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Stack(
