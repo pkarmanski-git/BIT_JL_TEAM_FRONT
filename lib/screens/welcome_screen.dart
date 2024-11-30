@@ -1,11 +1,11 @@
 import 'dart:ui'; // Required for blur effect
 import 'package:flutter/material.dart';
-import 'package:jl_team_front_bit/screens/RegisterScreen.dart';
-import 'package:jl_team_front_bit/screens/SwipeScreen.dart';
+import 'package:jl_team_front_bit/screens/register_screen.dart';
+import 'package:jl_team_front_bit/screens/swipe_screen.dart';
 import '../constants/colors.dart';
 import '../service/service.dart';
-import 'CommunitiesScreen.dart';
-import 'LoginScreen.dart';
+import 'communities_screen.dart';
+import 'login_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   final Service service;

@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (response.error == ServiceErrors.ok) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => NavigatorScreen()),
+        MaterialPageRoute(builder: (context) => NavigatorScreen(service: widget.service,)),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

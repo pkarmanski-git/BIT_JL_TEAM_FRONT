@@ -12,7 +12,7 @@ import '../rest/hobby_service/dto/token_dto.dart';
 import '../rest/hobby_service/dto/token_refresh_dto.dart';
 import '../rest/rest_repository.dart';
 import '../utils/config.dart';
-import '../service/service.dart';
+
 class Service {
   final Logger logger = Logger();
   final User user = User();
@@ -25,6 +25,10 @@ class Service {
   Future<void> init() async {
     config = await loadConfig();
     restRepository = RestRepository(config: config);
+    String? refreshToken = await storage.read(key: 'refreshToken');
+    if(refreshToken != null && refreshToken != "") {
+      await this.refreshToken(refreshToken);
+    }
   }
 
 

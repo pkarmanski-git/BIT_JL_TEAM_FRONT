@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jl_team_front_bit/service/service.dart';
-import 'screens/SplashScreen.dart';
+import 'screens/splash_screen.dart';
 import 'constants/colors.dart';
 
 void main() async {

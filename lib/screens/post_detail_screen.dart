@@ -6,8 +6,8 @@ import '../constants/colors.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'EditCommentScreen.dart';
-import 'EditPostScreen.dart';
+import 'edit_comment_screen.dart';
+import 'edit_post_screen.dart';
 
 class PostDetailScreen extends StatefulWidget {
   final Post post;

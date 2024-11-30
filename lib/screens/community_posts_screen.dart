@@ -6,8 +6,8 @@ import '../constants/colors.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'AddPostScreen.dart';
-import 'PostDetailScreen.dart';
+import 'add_post_screen.dart';
+import 'post_detail_screen.dart';
 
 
 class CommunityPostsScreen extends StatefulWidget {

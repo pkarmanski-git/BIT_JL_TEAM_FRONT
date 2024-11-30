@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../service/service.dart';
 import 'account_screen.dart';
 import 'bottom_navigation_panel.dart';
 
 class NavigatorScreen extends StatefulWidget {
-  const NavigatorScreen({super.key});
+  final Service service;
+
+  const NavigatorScreen({super.key, required this.service});
 
   @override
   _NavigatorState createState() => _NavigatorState();

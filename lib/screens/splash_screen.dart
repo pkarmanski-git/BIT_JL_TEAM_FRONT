@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import '../service/service.dart';
-import 'WelcomeScreen.dart';
+import 'welcome_screen.dart';
+import 'navigator_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   final Service service;
@@ -46,7 +47,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) {
-          return WelcomeScreen(service: widget.service);
+          if(widget.service.user.isLogged){
+            return NavigatorScreen(service: widget.service);
+          }else{
+            return WelcomeScreen(service: widget.service);
+          }
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           const begin = Offset(0.0, 1.0);

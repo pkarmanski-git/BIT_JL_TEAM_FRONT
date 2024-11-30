@@ -8,7 +8,7 @@ import '/model/post.dart';
 import '../constants/colors.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'CommunityPostsScreen.dart';
+import 'community_posts_screen.dart';
 import '../service/service.dart';
 
 class CommunitiesScreen extends StatefulWidget {
