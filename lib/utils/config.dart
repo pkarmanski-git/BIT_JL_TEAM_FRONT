@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 
 class Config {
-  final String quizGenServiceAddress;
+  final String hobbyServiceAddress;
 
-  Config({required this.quizGenServiceAddress});
+  Config({required this.hobbyServiceAddress});
 
   factory Config.fromJson(Map<String, dynamic> json) {
-    return Config(quizGenServiceAddress: json['quiz_gen_address']);
+    return Config(hobbyServiceAddress: json['hobby_service_address']);
   }
 }
 
