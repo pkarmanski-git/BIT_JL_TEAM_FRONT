@@ -23,8 +23,10 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    widget.service.init();
+    _initializeService();
+  }
 
+  Future<void> _initializeService() async {
     _controller = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
@@ -35,6 +37,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _controller.forward();
+    await widget.service.init();
     Future.delayed(const Duration(seconds: 3), () {
       _navigateToWelcomeScreen();
     });
