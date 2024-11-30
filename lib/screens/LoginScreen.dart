@@ -2,9 +2,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import 'package:http/http.dart' as http;
+import '../service/service.dart'; // Upewnij się, że importujesz Service
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  final Service service;  // Dodaj Service jako pole
+
+  // Konstruktor przyjmujący Service jako argument
+  const LoginScreen({super.key, required this.service});
 
   Future<void> _login(String email, String password) async {
     final response = await http.post(

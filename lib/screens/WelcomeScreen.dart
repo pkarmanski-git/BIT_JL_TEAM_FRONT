@@ -1,9 +1,15 @@
 import 'dart:ui'; // Required for blur effect
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
+import '../service/service.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key});
+  final Service service;
+
+  const WelcomeScreen({
+    super.key,
+    required this.service,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,14 +20,14 @@ class WelcomeScreen extends StatelessWidget {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/background.png'), // Path to your background image
+                image: AssetImage('assets/background.png'),
                 fit: BoxFit.cover,
               ),
             ),
           ),
           // Blur effect overlay
           BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0), // Adjust blur intensity
+            filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
             child: Container(
               color: Colors.white54.withOpacity(0.1), // Add semi-transparent overlay
             ),

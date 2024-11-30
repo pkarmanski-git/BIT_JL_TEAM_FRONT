@@ -2,13 +2,16 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import 'package:http/http.dart' as http;
+import '../service/service.dart'; // Upewnij się, że importujesz Service
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+  final Service service;  // Dodaj Service jako pole
+
+  // Konstruktor przyjmujący Service jako argument
+  const RegisterScreen({super.key, required this.service});
 
   Future<void> _register(String email, String password, String confirmPassword) async {
     if (password != confirmPassword) {
-      // Obsługa błędu: hasła się nie zgadzają
       print('Passwords do not match!');
       return;
     }

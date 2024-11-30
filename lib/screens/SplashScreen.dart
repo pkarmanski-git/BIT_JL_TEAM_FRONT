@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
-import 'WelcomeScreen.dart'; // Import WelcomeScreen for navigation
+import '../service/service.dart';
+import 'WelcomeScreen.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  final Service service;
+
+  const SplashScreen({
+    super.key,
+    required this.service,
+  });
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -28,8 +34,6 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _controller.forward();
-
-    // Przejście z animacją po zakończeniu animacji splash screen
     Future.delayed(const Duration(seconds: 3), () {
       _navigateToWelcomeScreen();
     });
@@ -38,9 +42,11 @@ class _SplashScreenState extends State<SplashScreen>
   void _navigateToWelcomeScreen() {
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => const WelcomeScreen(),
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return WelcomeScreen(service: widget.service);
+        },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(0.0, 1.0); // Start od dołu ekranu
+          const begin = Offset(0.0, 1.0);
           const end = Offset.zero;
           const curve = Curves.ease;
 
@@ -64,7 +70,7 @@ class _SplashScreenState extends State<SplashScreen>
         child: ScaleTransition(
           scale: _animation,
           child: Image.asset(
-            'assets/logo.png', // Ścieżka do logo
+            'assets/logo.png',
             height: 150,
           ),
         ),

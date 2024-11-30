@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
+import '../service/service.dart';  // Upewnij się, że importujesz Service
 
 class AboutMeScreen extends StatefulWidget {
-  const AboutMeScreen({super.key});
+  final Service service;  // Dodaj pole service
+
+  const AboutMeScreen({super.key, required this.service});  // Zaktualizuj konstruktor
 
   @override
   _AboutMeScreenState createState() => _AboutMeScreenState();
@@ -81,6 +84,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
               ),
               onPressed: () {
                 // Obsługa zapisu danych
+                // Możesz użyć widget.service do zapisania lub wysłania danych
               },
               child: Text(
                 'Save',
