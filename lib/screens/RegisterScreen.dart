@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import 'package:http/http.dart' as http;
-import '../service/service.dart'; // Upewnij się, że importujesz Service
+import '../service/service.dart';
 
 class RegisterScreen extends StatelessWidget {
   final Service service;  // Dodaj Service jako pole
