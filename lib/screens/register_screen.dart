@@ -91,32 +91,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Background image
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/background.png'), // Path to your background image
+                image: AssetImage('assets/background.png'),
                 fit: BoxFit.cover,
               ),
             ),
           ),
-          // Blur effect overlay
           BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0), // Adjust blur intensity
+            filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
             child: Container(
-              color: Colors.white54.withOpacity(0.1), // Add semi-transparent overlay
+              color: Colors.white54.withOpacity(0.1),
             ),
           ),
-          // Main content
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),
               child: Form(
-                key: _formKey, // Attach form key
+                key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    // Header text
                     Text(
                       'Create your account',
                       textAlign: TextAlign.center,
@@ -135,7 +131,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         prefixIcon: Icon(Icons.email),
                       ),
                       keyboardType: TextInputType.emailAddress,
-                      validator: _validateEmail, // Attach email validator
+                      validator: _validateEmail,
                     ),
                     const SizedBox(height: 10),
                     // Password field

@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../../model/user.dart';
 import 'dto/login_dto.dart';
+import 'dto/profile_dto.dart';
 import 'dto/register_dto.dart';
 import 'dto/token_dto.dart';
 import 'dto/token_refresh_dto.dart';
@@ -91,7 +92,7 @@ class HobbyService{
     }
   }
 
-  Future<Object> uploadQuiz(User user, UploadQuizDTO data) async{
+  Future<ProfileDTO> uploadQuiz(User user, UploadQuizDTO data) async{
     const endpoint = "/profile/upload-quiz/";
     final url = Uri.parse('$baseUrl$endpoint');
     try {
@@ -106,7 +107,7 @@ class HobbyService{
         body: json.encode(data.toJson()),
       ).timeout(duration);
       logger.i(response.body);
-      return TokenDTO.fromJson(json.decode(response.body));
+      return ProfileDTO.fromJson(json.decode(response.body));
     } catch (e) {
       throw Exception('Error in POST request: $e');
     }
