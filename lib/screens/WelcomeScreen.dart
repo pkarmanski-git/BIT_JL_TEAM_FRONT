@@ -2,6 +2,7 @@ import 'dart:ui'; // Required for blur effect
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import '../service/service.dart';
+import 'CommunitiesScreen.dart';
 import 'LoginScreen.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -100,6 +101,33 @@ class WelcomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.secondaryColor,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CommunitiesScreen(service: service),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Explore Communities',
+                      style: TextStyle(
+                        color: AppColors.buttonTextColor,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
                 // Test SwipeScreen button
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40.0), // Same padding for consistency

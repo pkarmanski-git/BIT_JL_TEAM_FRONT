@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '/model/comment.dart';
-import '/model/comunity.dart';
+import '/model/community.dart';
 import '/model/post.dart';
 import '../constants/colors.dart';
 import 'package:http/http.dart' as http;

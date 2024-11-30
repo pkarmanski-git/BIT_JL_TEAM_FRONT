@@ -1,7 +1,9 @@
 
 
-import 'package:logger/logger.dart';
+import 'dart:convert';
 
+import 'package:logger/logger.dart';
+import 'package:jl_team_front_bit/model/community.dart';
 import '../model/user.dart';
 import '../utils/config.dart';
 import 'hobby_service/dto/login_dto.dart';
@@ -19,6 +21,8 @@ class RestRepository {
     this.config = config;
     this.service = new HobbyService(baseUrl: config.hobbyServiceAddress);
   }
+
+  get client => null;
 
   Future<Object> register(RegisterDTO data) async {
       Object response = await service.register(data);
@@ -41,5 +45,14 @@ class RestRepository {
     TokenDTO responseDTO = await service.refresh(data);
     return responseDTO;
   }
-
+// Fetch communities with posts
+  Future<List<Community>> fetchCommunitiesWithPosts() async {
+    final response = await client.get('${config.baseUrl}/communities'); // Adjust API endpoint
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((json) => Community.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to fetch communities');
+    }
+  }
 }

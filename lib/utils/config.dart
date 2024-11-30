@@ -9,6 +9,8 @@ class Config {
   factory Config.fromJson(Map<String, dynamic> json) {
     return Config(hobbyServiceAddress: json['hobby_service_address']);
   }
+
+  get baseUrl => null;
 }
 
 Future<Config> loadConfig() async {
