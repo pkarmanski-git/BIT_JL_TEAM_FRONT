@@ -339,10 +339,20 @@ class _QuizScreenState extends State<QuizScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  HobbyLoader(), // Custom loader widget
-                  const SizedBox(height: 75), // Spacing between loader and text
                   Text(
-                    "We are hobbying for YOU ;) Give us a sec!",
+                    "We are hobbying for YOU ;)",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.teal, // Matches the loader's color scheme
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 130),
+                  HobbyLoader(), // Custom loader widget
+                  const SizedBox(height: 130), // Spacing between loader and text
+                  Text(
+                    "Give us a sec!",
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,

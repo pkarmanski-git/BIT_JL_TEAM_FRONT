@@ -152,10 +152,20 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Text(
+              "Loading hobbies...",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 85),
             HobbyLoader(),
             const SizedBox(height: 85),
             const Text(
-              "Loading hobbies... Please wait!",
+              "Please wait!",
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
