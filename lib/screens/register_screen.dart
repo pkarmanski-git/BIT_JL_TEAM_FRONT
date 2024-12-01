@@ -89,6 +89,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Row(
+        mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.app_registration,
+              color: Colors.white,
+              size: 24,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Register',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        flexibleSpace: Container(
+        decoration: BoxDecoration(
+        gradient: LinearGradient(
+        colors: [Colors.teal, Colors.greenAccent],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        ),
+        ),
+        ),
+        centerTitle: true,
+        elevation: 4,
+        toolbarHeight: 70,
+        ),
       body: Stack(
         children: [
           BackdropFilter(
@@ -103,8 +136,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    const SizedBox(height: 120),
                     Text(
                       'Create your account',
                       textAlign: TextAlign.center,
@@ -145,31 +178,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       validator: _validateConfirmPassword,
                     ),
                     const SizedBox(height: 30),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.buttonColor,
+                        minimumSize: const Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                      ),
+                      onPressed: isLoading ? null : _register,
+                      child: isLoading
+                          ? CircularProgressIndicator(color: AppColors.buttonTextColor)
+                          : Text(
+                        'Create Account',
+                        style: TextStyle(
+                          color: AppColors.buttonTextColor,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
                   ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 30,
-            left: 40,
-            right: 40,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.buttonColor,
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-              onPressed: isLoading ? null : _register,
-              child: isLoading
-                  ? CircularProgressIndicator(color: AppColors.buttonTextColor)
-                  : Text(
-                'Create Account',
-                style: TextStyle(
-                  color: AppColors.buttonTextColor,
-                  fontSize: 18,
                 ),
               ),
             ),

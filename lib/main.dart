@@ -61,6 +61,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Hobby Finder',
       theme: _isDarkMode
           ? ThemeData.dark().copyWith(
