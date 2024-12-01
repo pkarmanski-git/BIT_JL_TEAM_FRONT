@@ -10,6 +10,7 @@ import 'package:jl_team_front_bit/model/community.dart';
 import '../model/user.dart';
 import '../utils/config.dart';
 import 'hobby_service/dto/get_hobbies_dto.dart';
+import 'hobby_service/dto/hobbie_dto.dart';
 import 'hobby_service/dto/login_dto.dart';
 import 'hobby_service/dto/profile_dto.dart';
 import 'hobby_service/dto/profile_me_dto.dart';
@@ -85,5 +86,10 @@ class RestRepository {
 
   Future<void> updateUserHobbies(User user, UpdateHobbyProfileDTO data) async{
     await service.updateUserHobbies(user, data);
+  }
+
+  Future<List<HobbyDTO>> getUserHobbies(User user) async{
+    List<HobbyDTO> response = await service.getUserHobbies(user);
+    return response;
   }
 }

@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import '../../model/user.dart';
 import 'dto/get_hobbies_dto.dart';
 import 'dto/get_user_profile_dto.dart';
+import 'dto/hobbie_dto.dart';
 import 'dto/login_dto.dart';
 import 'dto/profile_dto.dart';
 import 'dto/profile_me_dto.dart';
@@ -209,6 +210,30 @@ class HobbyService{
       if(response.statusCode != 200 && response.statusCode != 201){
         throw Exception('Error in POST request: $response');
       }
+    } catch (e) {
+      throw Exception('Error in POST request: $e');
+    }
+  }
+
+
+  Future<List<HobbyDTO>> getUserHobbies(User user) async{
+    const endpoint = "/profile/get-my-hobbies/";
+    final url = Uri.parse('$baseUrl$endpoint');
+    try {
+      logger.i(url);
+      String? accessToken = user.token?.access;
+      final response = await http.post(
+          url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $accessToken',
+          }
+          ).timeout(duration);
+      logger.i(response.body);
+      if(response.statusCode != 200 && response.statusCode != 201){
+        throw Exception('Error in POST request: $response');
+      }
+      return json.decode(response.body).map((item) => HobbyDTO.fromJson(item));
     } catch (e) {
       throw Exception('Error in POST request: $e');
     }
