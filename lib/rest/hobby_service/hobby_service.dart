@@ -5,6 +5,7 @@ import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
 import '../../model/user.dart';
+import 'dto/get_hobbies_dto.dart';
 import 'dto/login_dto.dart';
 import 'dto/profile_dto.dart';
 import 'dto/register_dto.dart';
@@ -101,13 +102,40 @@ class HobbyService{
       String? accessToken = user.token?.access;
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json',
+        headers: {
+          'Content-Type': 'application/json',
           'Authorization': 'Bearer $accessToken',
         },
         body: json.encode(data.toJson()),
       ).timeout(duration);
       logger.i(response.body);
+      if(response.statusCode != 200 && response.statusCode != 201){
+        throw Exception('Error in POST request: $response');
+      }
       return ProfileDTO.fromJson(json.decode(response.body));
+    } catch (e) {
+      throw Exception('Error in POST request: $e');
+    }
+  }
+
+  Future<GetHobbiesDTO> getMatchedHobbies(User user) async{
+    const endpoint = "/hobby-matching/";
+    final url = Uri.parse('$baseUrl$endpoint');
+    try {
+      logger.i(url);
+      String? accessToken = user.token?.access;
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+      ).timeout(duration);
+      logger.i(response.body);
+      if(response.statusCode != 200 && response.statusCode != 201){
+        throw Exception('Error in POST request: $response');
+      }
+      return GetHobbiesDTO.fromJson(json.decode(response.body));
     } catch (e) {
       throw Exception('Error in POST request: $e');
     }

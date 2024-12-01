@@ -5,9 +5,13 @@ import 'package:logger/logger.dart';
 
 import '../enums/service_errors.dart';
 import '../model/answer.dart';
+import '../model/hobby.dart';
+import '../model/profile.dart';
 import '../model/service_response.dart';
 import '../model/token.dart';
+import '../rest/hobby_service/dto/get_hobbies_dto.dart';
 import '../rest/hobby_service/dto/login_dto.dart';
+import '../rest/hobby_service/dto/profile_dto.dart';
 import '../rest/hobby_service/dto/register_dto.dart';
 import '../rest/hobby_service/dto/token_dto.dart';
 import '../rest/hobby_service/dto/token_refresh_dto.dart';
@@ -96,11 +100,22 @@ class Service {
     }
   }
 
-  Future<ServiceResponse> uploadQuiz(List<Answer> answers) async {
+  Future<ServiceResponse<ProfileDTO>> uploadQuiz(List<Answer> answers) async {
     try {
       var data = UploadQuizDTO(answers);
-      this.restRepository.uploadQuiz(user, data);
-      return ServiceResponse(data: null, error: ServiceErrors.ok);
+      ProfileDTO response = await restRepository.uploadQuiz(user, data);
+      user.profile = Profile(response);
+      return ServiceResponse(data: response, error: ServiceErrors.ok);
+    } catch (e) {
+      logger.e(e.toString());
+      return ServiceResponse(data: null, error: ServiceErrors.genericError);
+    }
+  }
+
+  Future<ServiceResponse<List<Hobby>>> getMatchedHobbies() async {
+    try {
+      GetHobbiesDTO response = await restRepository.getMatchedHobby(user);
+      return ServiceResponse(data: response.results.map((result) => Hobby.fromDTO(result)).toList(), error: ServiceErrors.ok);
     } catch (e) {
       logger.e(e.toString());
       return ServiceResponse(data: null, error: ServiceErrors.genericError);

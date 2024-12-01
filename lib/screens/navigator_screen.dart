@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jl_team_front_bit/screens/swipe_screen.dart';
+import 'package:jl_team_front_bit/screens/explore_hobbies_screen.dart';
 
 import '../service/service.dart';
 import 'account_screen.dart';
