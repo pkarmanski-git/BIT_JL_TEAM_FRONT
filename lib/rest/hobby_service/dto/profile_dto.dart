@@ -1,5 +1,5 @@
 class ProfileDTO{
-  Map<String, int> character;
+  Map<String, int>? character;
 
   ProfileDTO(this.character);
 

@@ -9,7 +9,7 @@ class ProfileMeDTO{
   Map<String, dynamic> toJson() {
     return {
       "username": username,
-      "age": int,
+      "age": age,
       "location": location
     };
   }

@@ -54,7 +54,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
     }
     ProfileMe profileMe = ProfileMe(
         _nicknameController.text,
-        int.tryParse(_ageController.text) ?? 0,
+        0,
         _selectedLocation ?? ""
     );
     widget.service.profileUser(profileMe);

@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 
 import '../../model/user.dart';
 import 'dto/get_hobbies_dto.dart';
-import 'dto/get_user_profile_dto.dart';
 import 'dto/hobbie_dto.dart';
 import 'dto/login_dto.dart';
 import 'dto/profile_dto.dart';
@@ -20,7 +19,7 @@ import 'dto/user_profile_dto.dart';
 class HobbyService{
   final String baseUrl;
   final Logger logger = Logger();
-  final Duration duration = const Duration(seconds: 60);
+  final Duration duration = const Duration(seconds: 100);
 
   HobbyService({required this.baseUrl});
 

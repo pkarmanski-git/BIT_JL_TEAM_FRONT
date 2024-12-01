@@ -115,7 +115,7 @@ class AccountScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => RadarChartWidget(
-                      personalityData: service.user.profile!.character,
+                      personalityData: service.user.profile!.character!,
                     ),
                   ),
                 );
