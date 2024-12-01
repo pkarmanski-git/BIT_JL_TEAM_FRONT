@@ -105,7 +105,7 @@ class HobbyService{
     }
   }
 
-  Future<ProfileDTO> uploadQuiz(User user, UploadQuizDTO data) async{
+  Future<void> uploadQuiz(User user, UploadQuizDTO data) async{
     const endpoint = "/profile/upload-quiz/";
     final url = Uri.parse('$baseUrl$endpoint');
     try {
@@ -124,7 +124,8 @@ class HobbyService{
       if(response.statusCode != 200 && response.statusCode != 201){
         throw Exception('Error in POST request: $response');
       }
-      return ProfileDTO.fromJson(json.decode(response.body));
+      // var data_json = json.decode(response.body);
+      // return ProfileDTO.fromJson(data_json ?? {});
     } catch (e) {
       throw Exception('Error in POST request: $e');
     }

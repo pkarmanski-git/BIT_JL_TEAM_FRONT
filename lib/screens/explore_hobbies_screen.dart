@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:jl_team_front_bit/screens/navigator_screen.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import '../constants/colors.dart';
 import '../enums/service_errors.dart';
@@ -35,6 +36,17 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
   late Animation<double> _heightAnimation;
   bool _isDetailsVisible = false;
   int currentIndex = 0;
+
+  @override
+  Future<bool> onWillPop() async {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NavigatorScreen(service: widget.service),
+      ),
+    );
+    return Future.value(false);
+  }
 
   @override
   void initState() {
@@ -116,7 +128,9 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: onWillPop,
+        child: Scaffold(
       appBar: AppBar(
         title: const Row(
           mainAxisSize: MainAxisSize.min,
@@ -210,6 +224,7 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
           ),
         ],
       ),
+        )
     );
   }
 

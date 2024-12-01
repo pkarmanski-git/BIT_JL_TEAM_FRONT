@@ -100,12 +100,12 @@ class Service {
     }
   }
 
-  Future<ServiceResponse<ProfileDTO>> uploadQuiz(List<Answer> answers) async {
+  Future<ServiceResponse> uploadQuiz(List<Answer> answers) async {
     try {
       var data = UploadQuizDTO(answers);
-      ProfileDTO response = await restRepository.uploadQuiz(user, data);
-      user.profile = Profile.fromProfileDTO(response);
-      return ServiceResponse(data: response, error: ServiceErrors.ok);
+      await restRepository.uploadQuiz(user, data);
+      // user.profile = Profile.fromProfileDTO(response);
+      return ServiceResponse(data: null, error: ServiceErrors.ok);
     } catch (e) {
       logger.e(e.toString());
       return ServiceResponse(data: null, error: ServiceErrors.genericError);

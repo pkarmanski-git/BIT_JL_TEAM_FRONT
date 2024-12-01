@@ -54,9 +54,9 @@ class RestRepository {
     return responseDTO;
   }
 
-  Future<ProfileDTO> uploadQuiz(User user, UploadQuizDTO data) async{
-    ProfileDTO responseDTO = await service.uploadQuiz(user, data);
-    return responseDTO;
+  Future<void> uploadQuiz(User user, UploadQuizDTO data) async{
+    await service.uploadQuiz(user, data);
+    return;
   }
 
   Future<GetHobbiesDTO> getMatchedHobby(User user) async{
