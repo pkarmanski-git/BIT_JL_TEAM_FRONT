@@ -26,7 +26,17 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
         .toList();
 
     return Scaffold(
-      backgroundColor: Colors.green[50], // Pastel pink background
+      appBar: AppBar(
+        title: const Text("Personality Radar Chart"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context); // Navigate back to the previous screen
+          },
+        ),
+        backgroundColor: Colors.teal,
+      ),
+      backgroundColor: Colors.green[50],
       body: Center(
         child: AspectRatio(
           aspectRatio: 1.2,
@@ -35,7 +45,8 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
               radarTouchData: RadarTouchData(
                 touchCallback: (FlTouchEvent event, RadarTouchResponse? response) {
                   setState(() {
-                    selectedDataSetIndex = response?.touchedSpot?.touchedDataSetIndex ?? -1;
+                    selectedDataSetIndex =
+                        response?.touchedSpot?.touchedDataSetIndex ?? -1;
                   });
                 },
               ),
@@ -46,13 +57,15 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
                       ? selectedBorderColor
                       : radarBorderColor,
                   entryRadius: 4,
-                  dataEntries: values.map((value) => RadarEntry(value: value)).toList(),
-                  borderWidth: 4, // Thicker lines
+                  dataEntries: values
+                      .map((value) => RadarEntry(value: value))
+                      .toList(),
+                  borderWidth: 4,
                 ),
               ],
               radarBackgroundColor: Colors.transparent,
               radarBorderData: BorderSide.none,
-              gridBorderData: BorderSide.none, // Remove grid
+              gridBorderData: BorderSide.none,
               titlePositionPercentageOffset: 0.2,
               getTitle: (index, angle) {
                 return RadarChartTitle(
@@ -60,12 +73,12 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
                   angle: angle,
                 );
               },
-              tickCount: 1, // Minimum tick count
+              tickCount: 1,
               ticksTextStyle: const TextStyle(
-                fontSize: 0, // Make ticks invisible
+                fontSize: 0,
                 color: Colors.transparent,
               ),
-              tickBorderData: BorderSide.none, // Remove tick borders
+              tickBorderData: BorderSide.none,
             ),
             duration: const Duration(milliseconds: 3000),
           ),

@@ -23,9 +23,9 @@ class AccountScreen extends StatelessWidget {
               size: 24,
             ),
             const SizedBox(width: 8),
-            Text(
+            const Text(
               'Account',
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
                 color: Colors.white,
@@ -51,33 +51,22 @@ class AccountScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-              Expanded(
+            Expanded(
               child: ListView(
                 children: [
                   _buildProfileDropdown(context),
                   _buildSettingsCard(
                     icon: Icons.settings,
-                    title: 'Preferences',
+                    title: 'Settings',
                     onTap: () {
-                      if(service.user.profile != null){
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RadarChartWidget(personalityData: service.user.profile!.character),
-                          ),
-                        );
-                      }else{
-                        //TODO error
-                      }
+                      Navigator.pushNamed(context, '/settings');
                     },
                   ),
                   _buildSettingsCard(
                     icon: Icons.logout,
                     title: 'Logout',
                     iconColor: Colors.redAccent,
-                    onTap: () {
-                      _logout(context);
-                    },
+                    onTap: () => _logout(context),
                   ),
                 ],
               ),
@@ -102,7 +91,7 @@ class AccountScreen extends StatelessWidget {
         ),
         children: [
           ListTile(
-            title: const Text('My Hobbies'),
+            title: const Text('Hobbies'),
             onTap: () {
               Navigator.push(
                 context,
@@ -110,6 +99,23 @@ class AccountScreen extends StatelessWidget {
                   builder: (context) => MyHobbiesScreen(service: service),
                 ),
               );
+            },
+          ),
+          ListTile(
+            title: const Text('Chart'),
+            onTap: () {
+              if (service.user.profile != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RadarChartWidget(
+                      personalityData: service.user.profile!.character,
+                    ),
+                  ),
+                );
+              } else {
+                _showErrorSnackBar(context, 'Profile data is missing.');
+              }
             },
           ),
         ],
@@ -145,7 +151,6 @@ class AccountScreen extends StatelessWidget {
   void _logout(BuildContext context) async {
     try {
       ServiceResponse response = await service.logout();
-
       if (response.error == ServiceErrors.ok) {
         Navigator.pushReplacement(
           context,
@@ -154,25 +159,10 @@ class AccountScreen extends StatelessWidget {
           ),
         );
       } else {
-        String errorMessage;
-        switch (response.error) {
-          case ServiceErrors.networkError:
-            errorMessage = 'Network error occurred. Please try again later.';
-            break;
-          case ServiceErrors.unauthorized:
-            errorMessage = 'Unauthorized access. Please log in again.';
-            break;
-          case ServiceErrors.serverError:
-            errorMessage = 'Server error. Please contact support.';
-            break;
-          default:
-            errorMessage = 'An unknown error occurred. Please try again.';
-        }
-
-        _showErrorDialog(context, errorMessage);
+        _showErrorDialog(context, 'Logout failed: ${response.error}');
       }
     } catch (e) {
-      _showErrorDialog(context, 'An unexpected error occurred. Please try again.');
+      _showErrorDialog(context, 'An unexpected error occurred: $e');
     }
   }
 
@@ -180,7 +170,7 @@ class AccountScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Logout Failed'),
+        title: const Text('Error'),
         content: Text(message),
         actions: [
           TextButton(
@@ -192,13 +182,11 @@ class AccountScreen extends StatelessWidget {
     );
   }
 
-
   void _showErrorSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: Colors.red,
-        behavior: SnackBarBehavior.floating,
       ),
     );
   }
@@ -222,8 +210,8 @@ class MyHobbiesScreen extends StatelessWidget {
               size: 24,
             ),
             const SizedBox(width: 8),
-            Text(
-              'My Hobbies',
+            const Text(
+              'Hobbies',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
