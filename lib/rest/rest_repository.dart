@@ -6,7 +6,10 @@ import 'package:logger/logger.dart';
 import 'package:jl_team_front_bit/model/community.dart';
 import '../model/user.dart';
 import '../utils/config.dart';
+import 'hobby_service/dto/get_hobbies_dto.dart';
 import 'hobby_service/dto/login_dto.dart';
+import 'hobby_service/dto/profile_dto.dart';
+import 'hobby_service/dto/profile_me_dto.dart';
 import 'hobby_service/dto/register_dto.dart';
 import 'hobby_service/dto/token_dto.dart';
 import 'hobby_service/dto/token_refresh_dto.dart';
@@ -47,9 +50,14 @@ class RestRepository {
     return responseDTO;
   }
 
-  Future<Object> uploadQuiz(User user, UploadQuizDTO data) async{
-    Object responseDTO = await service.uploadQuiz(user, data);
+  Future<ProfileDTO> uploadQuiz(User user, UploadQuizDTO data) async{
+    ProfileDTO responseDTO = await service.uploadQuiz(user, data);
     return responseDTO;
+  }
+
+  Future<GetHobbiesDTO> getMatchedHobby(User user) async{
+    GetHobbiesDTO response = await service.getMatchedHobbies(user);
+    return response;
   }
 
   Future<List<Community>> fetchCommunitiesWithPosts() async {
@@ -60,5 +68,10 @@ class RestRepository {
     } else {
       throw Exception('Failed to fetch communities');
     }
+  }
+
+  Future<Object> profileUser(User user, ProfileMeDTO data) async{
+    Object response = await service.profileUser(user, data);
+    return response;
   }
 }

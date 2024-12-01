@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jl_team_front_bit/model/service_response.dart';
-import 'package:jl_team_front_bit/screens/swipe_screen.dart';
+import 'package:jl_team_front_bit/screens/explore_hobbies_screen.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'dart:convert';
 

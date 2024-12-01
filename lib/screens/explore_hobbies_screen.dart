@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:jl_team_front_bit/enums/service_errors.dart';
+import 'package:jl_team_front_bit/model/hobby.dart';
 import 'package:swipe_cards/swipe_cards.dart';
-import '../model/hobby_swipe.dart';
 import '../constants/colors.dart';
+import '../model/service_response.dart';
 import '../service/service.dart';
 
 class SwipeScreen extends StatefulWidget {
@@ -12,17 +16,17 @@ class SwipeScreen extends StatefulWidget {
     required this.service,
   });
 
-
   @override
   _SwipeScreenState createState() => _SwipeScreenState();
 }
 
 class _SwipeScreenState extends State<SwipeScreen> {
-  List<HobbySwipe> hobbies = [];
-  List<HobbySwipe> likedHobbies = [];
-  late MatchEngine _matchEngine;
-  bool showDetails = false; // Flag for showing details
-  HobbySwipe? currentHobby; // Currently selected hobby
+  List<Hobby> hobbies = [];
+  List<Hobby> likedHobbies = [];
+  MatchEngine? _matchEngine;
+  bool showDetails = false;
+  Hobby? currentHobby;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -30,41 +34,37 @@ class _SwipeScreenState extends State<SwipeScreen> {
     _loadHobbies();
   }
 
-  void _loadHobbies() {
+  Future<void> _loadHobbies() async {
     setState(() {
-      hobbies = [
-        HobbySwipe(
-          1,
-          'Photography',
-          'https://via.placeholder.com/400',
-          'Photography is the art of capturing light with a camera.',
-        ),
-        HobbySwipe(
-          2,
-          'Cooking',
-          'https://via.placeholder.com/400',
-          'Cooking is the practice of preparing food by combining ingredients.',
-        ),
-        HobbySwipe(
-          3,
-          'Gardening',
-          'https://via.placeholder.com/400',
-          'Gardening is the activity of growing and maintaining the garden.',
-        ),
-      ];
-
-      _matchEngine = MatchEngine(
-        swipeItems: hobbies.map((hobby) {
-          return SwipeItem(
-            content: hobby,
-            likeAction: () {
-              likedHobbies.add(hobby);
-            },
-            nopeAction: () {},
-          );
-        }).toList(),
-      );
+      isLoading = true;
     });
+    try {
+      ServiceResponse<List<Hobby>> response = await widget.service.getMatchedHobbies();
+      if (response.error == ServiceErrors.ok) {
+        setState(() {
+          hobbies = response.data!;
+          _matchEngine = MatchEngine(
+            swipeItems: hobbies.map((hobby) {
+              return SwipeItem(
+                content: hobby,
+                likeAction: () {
+                  likedHobbies.add(hobby);
+                },
+                nopeAction: () {},
+              );
+            }).toList(),
+          );
+        });
+      } else {
+        _showErrorSnackbar("Failed to load hobbies: ${response.error}");
+      }
+    } catch (e) {
+      _showErrorSnackbar("An error occurred while loading hobbies: $e");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -103,8 +103,10 @@ class _SwipeScreenState extends State<SwipeScreen> {
         elevation: 4,
         toolbarHeight: 70,
       ),
-      body: hobbies.isEmpty
+      body: isLoading
           ? const Center(child: CircularProgressIndicator())
+          : hobbies.isEmpty
+          ? const Center(child: Text('No hobbies found.'))
           : Column(
         children: [
           if (showDetails && currentHobby != null)
@@ -117,8 +119,12 @@ class _SwipeScreenState extends State<SwipeScreen> {
   }
 
   Widget _buildSwipeView(BuildContext context) {
+    if (_matchEngine == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return SwipeCards(
-      matchEngine: _matchEngine,
+      matchEngine: _matchEngine!,
       itemBuilder: (context, index) {
         final hobby = hobbies[index];
         return GestureDetector(
@@ -135,26 +141,36 @@ class _SwipeScreenState extends State<SwipeScreen> {
             child: Column(
               children: [
                 Expanded(
-                  child: Image.network(
-                    hobby.imageBase64,
+                  child: hobby.image != null && hobby.image!.isNotEmpty
+                      ? Image.memory(
+                    base64Decode(hobby.image!),
                     fit: BoxFit.cover,
                     width: double.infinity,
                     errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey,
-                        child: const Icon(
-                          Icons.image,
-                          size: 100,
-                          color: Colors.white,
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                    return Container(
+                      color: Colors.grey,
+                      child: const Icon(
+                        Icons.image,
+                        size: 100,
+                        color: Colors.white,
+                      ),
+                    );
+            },
+          )
+              : Container(
+          color: Colors.grey,
+          child: const Icon(
+            Icons.image,
+            size: 100,
+            color: Colors.white,
+          ),
+        ),
+
+        ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    hobby.summary,
+                    hobby.name,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -171,8 +187,8 @@ class _SwipeScreenState extends State<SwipeScreen> {
       onStackFinished: _showCompletionDialog,
       upSwipeAllowed: false,
       fillSpace: true,
-      likeTag: Icon(Icons.favorite, color: Colors.green, size: 100),
-      nopeTag: Icon(Icons.close, color: Colors.red, size: 100),
+      likeTag: const Icon(Icons.favorite, color: Colors.green, size: 100),
+      nopeTag: const Icon(Icons.close, color: Colors.red, size: 100),
     );
   }
 
@@ -188,7 +204,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            currentHobby!.summary,
+            currentHobby!.name,
             style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -196,11 +212,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
-          Image.network(
-            currentHobby!.imageBase64,
-            height: 200,
-            width: double.infinity,
+          currentHobby?.image != null
+              ? Image.memory(
+            base64Decode(currentHobby!.image!),
             fit: BoxFit.cover,
+            width: double.infinity,
             errorBuilder: (context, error, stackTrace) {
               return Container(
                 color: Colors.grey,
@@ -211,12 +227,21 @@ class _SwipeScreenState extends State<SwipeScreen> {
                 ),
               );
             },
+          )
+              : Container(
+            color: Colors.grey,
+            child: const Icon(
+              Icons.image,
+              size: 100,
+              color: Colors.white,
+            ),
           ),
+
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              currentHobby!.details ?? 'No additional details available.',
+              currentHobby!.name,
               style: const TextStyle(fontSize: 18),
               textAlign: TextAlign.center,
             ),
@@ -249,5 +274,13 @@ class _SwipeScreenState extends State<SwipeScreen> {
         );
       },
     );
+  }
+
+  void _showErrorSnackbar(String message) {
+    final snackBar = SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.red,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
