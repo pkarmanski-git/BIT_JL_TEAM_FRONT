@@ -103,6 +103,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       );
                     },
                   ),
+                  const SizedBox(height: 320),
                   _buildSettingsCard(
                     icon: Icons.logout,
                     title: 'Logout',
