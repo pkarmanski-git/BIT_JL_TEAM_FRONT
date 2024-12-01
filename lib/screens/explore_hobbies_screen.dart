@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:jl_team_front_bit/enums/service_errors.dart';
@@ -104,7 +105,24 @@ class _SwipeScreenState extends State<SwipeScreen> {
         toolbarHeight: 70,
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            HobbyLoader(), // Replaced CircularProgressIndicator with HobbyLoader
+            const SizedBox(height: 85),
+            Text(
+              "Loading hobbies... Please wait!",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      )
           : hobbies.isEmpty
           ? const Center(child: Text('No hobbies found.'))
           : Column(
@@ -117,6 +135,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
       ),
     );
   }
+
 
   Widget _buildSwipeView(BuildContext context) {
     if (_matchEngine == null) {
@@ -282,5 +301,66 @@ class _SwipeScreenState extends State<SwipeScreen> {
       backgroundColor: Colors.red,
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+}
+// Add the HobbyLoader widget
+class HobbyLoader extends StatefulWidget {
+  @override
+  _HobbyLoaderState createState() => _HobbyLoaderState();
+}
+
+class _HobbyLoaderState extends State<HobbyLoader>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  final List<IconData> hobbyIcons = [
+    Icons.sports_basketball,
+    Icons.music_note,
+    Icons.camera_alt,
+    Icons.book,
+    Icons.palette,
+    Icons.computer,
+    Icons.directions_bike,
+    Icons.flight,
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 4),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RotationTransition(
+      turns: _controller,
+      child: Stack(
+        alignment: Alignment.center,
+        children: hobbyIcons.map((iconData) {
+          int index = hobbyIcons.indexOf(iconData);
+          double angle = (2 * pi * index) / hobbyIcons.length;
+          return Transform.translate(
+            offset: Offset(
+              80 * cos(angle), // Increase from 60 to 80 for larger circle
+              80 * sin(angle),
+            ),
+            child: Icon(
+              iconData,
+              size: 40, // Increase from 30 to 40
+              color: Colors.teal,
+            ),
+          );
+        }).toList(),
+      ),
+    );
   }
 }
