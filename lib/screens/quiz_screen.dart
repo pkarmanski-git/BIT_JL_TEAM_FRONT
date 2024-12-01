@@ -16,8 +16,7 @@ import '../service/service.dart';
 class QuizScreen extends StatefulWidget {
   final Service service;
 
-  const QuizScreen(
-      {super.key, required this.service, required String nickname});
+  const QuizScreen({super.key, required this.service, required String nickname});
 
   @override
   _QuizScreenState createState() => _QuizScreenState();
@@ -35,8 +34,7 @@ class _QuizScreenState extends State<QuizScreen> {
   int currentQuestionIndex = 0;
   bool isLoading = false;
 
-  Map<String, String> imageStatements =
-  ImageStatementFactory.createImageStatements();
+  Map<String, String> imageStatements = ImageStatementFactory.createImageStatements();
 
   @override
   void initState() {
@@ -98,10 +96,7 @@ class _QuizScreenState extends State<QuizScreen> {
         statement = 'User is ' + (answerValue ? '' : 'not ') + statement;
       } else if (statement.startsWith('Is it ')) {
         statement = statement.replaceFirst('Is it ', '');
-        statement = 'It is ' +
-            (answerValue ? '' : 'not ') +
-            statement +
-            ' for the user';
+        statement = 'It is ' + (answerValue ? '' : 'not ') + statement + ' for the user';
       } else {
         statement = 'User ' + (answerValue ? '' : 'does not ') + statement;
       }
@@ -125,8 +120,7 @@ class _QuizScreenState extends State<QuizScreen> {
         // Navigate to the chart screen after the loader
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-              builder: (context) => SwipeScreen(service: widget.service)),
+          MaterialPageRoute(builder: (context) => SwipeScreen(service: widget.service)),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -143,6 +137,7 @@ class _QuizScreenState extends State<QuizScreen> {
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -219,34 +214,17 @@ class _QuizScreenState extends State<QuizScreen> {
                         children: [
                           Expanded(
                             child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.red.withOpacity(0.3),
-                                    Colors.transparent,
-                                  ],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                ),
-                              ),
+                              color: Colors.red.withOpacity(0), // Red background with slight opacity
                             ),
                           ),
                           Expanded(
                             child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.green.withOpacity(0.3),
-                                  ],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                ),
-                              ),
+                              color: Colors.green.withOpacity(0), // Green background with slight opacity
                             ),
                           ),
                         ],
                       ),
+
                       SwipeCards(
                         matchEngine: _matchEngine,
                         itemBuilder: (BuildContext context, int index) {
@@ -256,8 +234,7 @@ class _QuizScreenState extends State<QuizScreen> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 40),
+                            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16),
@@ -265,8 +242,7 @@ class _QuizScreenState extends State<QuizScreen> {
                                     ? null
                                     : DecorationImage(
                                   image: AssetImage(
-                                    question.imagePath ??
-                                        defaultBackgroundImage,
+                                    question.imagePath ?? defaultBackgroundImage,
                                   ),
                                   fit: BoxFit.cover,
                                   colorFilter: ColorFilter.mode(
@@ -277,13 +253,11 @@ class _QuizScreenState extends State<QuizScreen> {
                               ),
                               child: question.isImageQuestion
                                   ? Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.stretch,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Expanded(
                                     child: ClipRRect(
-                                      borderRadius:
-                                      const BorderRadius.only(
+                                      borderRadius: BorderRadius.only(
                                         topLeft: Radius.circular(16),
                                         topRight: Radius.circular(16),
                                       ),
@@ -334,35 +308,22 @@ class _QuizScreenState extends State<QuizScreen> {
                       ),
                     ],
                   )
-                      : const Text('No questions available'),
+                      : Text('No questions available'),
                 ),
               ),
             ],
           ),
           if (isLoading)
-            Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  HobbyLoader(), // Custom loader widget
-                  const SizedBox(height: 85), // Spacing between loader and text
-                  Text(
-                    "We are hobbying for YOU ;) Give us a sec!",
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.teal, // Matches the loader's color scheme
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+            Container(
+              color: Colors.black.withOpacity(0.01), // Semi-transparent overlay
+              child: Center(
+                child: HobbyLoader(), // Custom loader widget
               ),
             ),
         ],
       ),
     );
   }
-
 }
 
 // Add the HobbyLoader widget
@@ -371,8 +332,7 @@ class HobbyLoader extends StatefulWidget {
   _HobbyLoaderState createState() => _HobbyLoaderState();
 }
 
-class _HobbyLoaderState extends State<HobbyLoader>
-    with SingleTickerProviderStateMixin {
+class _HobbyLoaderState extends State<HobbyLoader> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   final List<IconData> hobbyIcons = [

@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:jl_team_front_bit/rest/hobby_service/dto/update_hobby_profile_dto.dart';
 import 'package:jl_team_front_bit/rest/hobby_service/dto/upload_quiz_dto.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
 import '../../model/user.dart';
 import 'dto/get_hobbies_dto.dart';
+import 'dto/get_user_profile_dto.dart';
+import 'dto/hobbie_dto.dart';
 import 'dto/login_dto.dart';
 import 'dto/profile_dto.dart';
 import 'dto/profile_me_dto.dart';
@@ -164,4 +167,89 @@ class HobbyService{
       throw Exception('Error in POST request: $e');
     }
   }
+
+  Future<GetUserProfileDTO> getUserProfile(User user) async{
+    const endpoint = "/profile/me/";
+    final url = Uri.parse('$baseUrl$endpoint');
+    try {
+      logger.i(url);
+      String? accessToken = user.token?.access;
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+      ).timeout(duration);
+      logger.i(response.body);
+      if(response.statusCode != 200 && response.statusCode != 201){
+        throw Exception('Error in POST request: $response');
+      }
+      return GetUserProfileDTO.fromJson(json.decode(response.body));
+    } catch (e) {
+      throw Exception('Error in POST request: $e');
+    }
+  }
+
+  Future<void> updateUserHobbies(User user, UpdateHobbyProfileDTO data) async{
+    const endpoint = "/profile/update-hobbies-profiles/";
+    final url = Uri.parse('$baseUrl$endpoint');
+    try {
+      logger.i(url);
+      logger.i(data.toJson());
+      String? accessToken = user.token?.access;
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: json.encode(data.toJson())
+      ).timeout(duration);
+      logger.i(response.body);
+      if(response.statusCode != 200 && response.statusCode != 201){
+        throw Exception('Error in POST request: $response');
+      }
+    } catch (e) {
+      throw Exception('Error in POST request: $e');
+    }
+  }
+
+
+  Future<List<HobbyDTO>> getUserHobbies(User user) async {
+    const endpoint = "/profile/get-my-hobbies/";
+    final url = Uri.parse('$baseUrl$endpoint');
+
+    try {
+      logger.i(url);
+
+      String? accessToken = user.token?.access;
+      if (accessToken == null) {
+        throw Exception('Access token is null');
+      }
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+      ).timeout(duration);
+
+      logger.i(response.body);
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw Exception('Error in GET request: ${response.statusCode} ${response.body}');
+      }
+
+      List<dynamic> responseList = json.decode(response.body);
+      return responseList.map((item) => HobbyDTO.fromJson(item)).toList();
+
+    } catch (e) {
+      logger.e('Error in getUserHobbies: $e');
+      throw Exception('Error while fetching hobbies: $e');
+    }
+  }
+
+
 }

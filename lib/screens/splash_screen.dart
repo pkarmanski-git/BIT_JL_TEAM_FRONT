@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       vsync: this,
     );
 
-    _animation = Tween<double>(begin: 6.0, end:2).animate(
+    _animation = Tween<double>(begin: 6.0, end: 2.5).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
@@ -47,9 +47,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) {
-          if(widget.service.user.isLogged){
+          if (widget.service.user.isLogged) {
             return NavigatorScreen(service: widget.service);
-          }else{
+          } else {
             return WelcomeScreen(service: widget.service);
           }
         },
@@ -74,14 +74,21 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      body: Center(
-        child: ScaleTransition(
-          scale: _animation,
-          child: Image.asset(
-            'assets/logo.png',
-            height: 150,
+      body: Stack(
+        children: [
+          // Position the logo explicitly 100px higher using Positioned
+          Positioned(
+            top: MediaQuery.of(context).size.height / 2 - 75 - 100, // Center vertically and move 100px higher
+            left: MediaQuery.of(context).size.width / 2 - 75, // Center horizontally
+            child: ScaleTransition(
+              scale: _animation,
+              child: Image.asset(
+                'assets/logo.png',
+                height: 150,
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

@@ -23,11 +23,12 @@ class SwipeScreen extends StatefulWidget {
 
 class _SwipeScreenState extends State<SwipeScreen> {
   List<Hobby> hobbies = [];
-  List<Hobby> likedHobbies = [];
   MatchEngine? _matchEngine;
   bool showDetails = false;
   Hobby? currentHobby;
   bool isLoading = false;
+  OverlayEntry? overlayEntry; // Store the overlay entry
+  TextEditingController textController = TextEditingController();
 
   @override
   void initState() {
@@ -49,9 +50,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
               return SwipeItem(
                 content: hobby,
                 likeAction: () {
-                  likedHobbies.add(hobby);
+                  widget.service.updateUserHobby([hobby.id], []);
                 },
-                nopeAction: () {},
+                nopeAction: () {
+                  widget.service.updateUserHobby([], [hobby.id]);
+                },
               );
             }).toList(),
           );
@@ -68,11 +71,72 @@ class _SwipeScreenState extends State<SwipeScreen> {
     }
   }
 
+  void _showOverlay(BuildContext context) {
+    overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 200, // Adjust to your needs
+        left: 50,
+        right: 50,
+        child: Material(
+          color: Colors.transparent,
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                overlayEntry?.remove();
+                overlayEntry = null;
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: textController,
+                    decoration: InputDecoration(
+                      labelText: "Enter some text",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Handle the text input, maybe save or submit it
+                      print("Text: ${textController.text}");
+                      setState(() {
+                        overlayEntry?.remove();
+                        overlayEntry = null;
+                      });
+                    },
+                    child: const Text("Submit"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context)?.insert(overlayEntry!);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        title: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
@@ -80,10 +144,10 @@ class _SwipeScreenState extends State<SwipeScreen> {
               color: Colors.white,
               size: 24,
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8),
             Text(
               'Discover Hobbies',
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
                 color: Colors.white,
@@ -111,7 +175,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
           children: [
             HobbyLoader(), // Replaced CircularProgressIndicator with HobbyLoader
             const SizedBox(height: 85),
-            Text(
+            const Text(
               "Loading hobbies... Please wait!",
               style: TextStyle(
                 fontSize: 22,
@@ -127,15 +191,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
           ? const Center(child: Text('No hobbies found.'))
           : Column(
         children: [
-          if (showDetails && currentHobby != null)
-            Expanded(child: _buildDetailsView(context))
-          else
-            Expanded(child: _buildSwipeView(context)),
+          Expanded(child: _buildSwipeView(context)),
         ],
       ),
     );
   }
-
 
   Widget _buildSwipeView(BuildContext context) {
     if (_matchEngine == null) {
@@ -147,12 +207,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
       itemBuilder: (context, index) {
         final hobby = hobbies[index];
         return GestureDetector(
-          onTap: () {
-            setState(() {
-              showDetails = true;
-              currentHobby = hobby;
-            });
-          },
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
@@ -166,26 +220,31 @@ class _SwipeScreenState extends State<SwipeScreen> {
                     fit: BoxFit.cover,
                     width: double.infinity,
                     errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey,
-                      child: const Icon(
-                        Icons.image,
-                        size: 100,
-                        color: Colors.white,
-                      ),
-                    );
-            },
-          )
-              : Container(
-          color: Colors.grey,
-          child: const Icon(
-            Icons.image,
-            size: 100,
-            color: Colors.white,
-          ),
-        ),
-
-        ),
+                      return Container(
+                        color: Colors.grey,
+                        child: const Icon(
+                          Icons.image,
+                          size: 100,
+                          color: Colors.white,
+                        ),
+                      );
+                    },
+                  )
+                      : Container(
+                    color: Colors.grey,
+                    child: const Icon(
+                      Icons.image,
+                      size: 100,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.arrow_upward),
+                  onPressed: () => _showOverlay(context),
+                  color: Colors.black,
+                  iconSize: 30,
+                ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
@@ -208,70 +267,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
       fillSpace: true,
       likeTag: const Icon(Icons.favorite, color: Colors.green, size: 100),
       nopeTag: const Icon(Icons.close, color: Colors.red, size: 100),
-    );
-  }
-
-  Widget _buildDetailsView(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          showDetails = false;
-          currentHobby = null;
-        });
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            currentHobby!.name,
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 20),
-          currentHobby?.image != null
-              ? Image.memory(
-            base64Decode(currentHobby!.image!),
-            fit: BoxFit.cover,
-            width: double.infinity,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                color: Colors.grey,
-                child: const Icon(
-                  Icons.image,
-                  size: 100,
-                  color: Colors.white,
-                ),
-              );
-            },
-          )
-              : Container(
-            color: Colors.grey,
-            child: const Icon(
-              Icons.image,
-              size: 100,
-              color: Colors.white,
-            ),
-          ),
-
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              currentHobby!.name,
-              style: const TextStyle(fontSize: 18),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            '(Tap anywhere to go back to swiping)',
-            style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-          ),
-        ],
-      ),
     );
   }
 
@@ -303,7 +298,8 @@ class _SwipeScreenState extends State<SwipeScreen> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
-// Add the HobbyLoader widget
+
+// The HobbyLoader widget, as previously provided.
 class HobbyLoader extends StatefulWidget {
   @override
   _HobbyLoaderState createState() => _HobbyLoaderState();
@@ -350,12 +346,12 @@ class _HobbyLoaderState extends State<HobbyLoader>
           double angle = (2 * pi * index) / hobbyIcons.length;
           return Transform.translate(
             offset: Offset(
-              80 * cos(angle), // Increase from 60 to 80 for larger circle
-              80 * sin(angle),
+              60 * cos(angle), // Zmniejszenie okręgu z 80 na 60
+              60 * sin(angle),
             ),
             child: Icon(
               iconData,
-              size: 40, // Increase from 30 to 40
+              size: 30,
               color: Colors.teal,
             ),
           );

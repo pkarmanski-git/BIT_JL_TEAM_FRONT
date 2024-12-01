@@ -4,6 +4,7 @@ import 'package:jl_team_front_bit/model/service_response.dart';
 import 'package:jl_team_front_bit/screens/welcome_screen.dart';
 import '../service/service.dart';
 import 'chart_screen.dart';
+import 'my_hobbies_screen.dart';
 
 class AccountScreen extends StatelessWidget {
   final Service service;
@@ -59,7 +60,14 @@ class AccountScreen extends StatelessWidget {
                     icon: Icons.settings,
                     title: 'Settings',
                     onTap: () {
-                      Navigator.pushNamed(context, '/settings');
+                      if(service.user.profile != null){
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RadarChartWidget(personalityData: service.user.profile!.character),
+                          ),
+                        );
+                      }
                     },
                   ),
                   _buildSettingsCard(
@@ -192,9 +200,9 @@ class AccountScreen extends StatelessWidget {
   }
 }
 
+
 class MyHobbiesScreen extends StatelessWidget {
   final Service service;
-
   const MyHobbiesScreen({super.key, required this.service});
 
   @override

@@ -26,6 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     ServiceResponse response = await widget.service.login(emailController.text, passwordController.text);
+    widget.service.getUserProfile();
+    widget.service.getUserHobby();
 
     setState(() {
       isLoading = false;
@@ -49,14 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Stack(
         children: [
           // Background image
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/background.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+
           // Blur effect overlay
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
