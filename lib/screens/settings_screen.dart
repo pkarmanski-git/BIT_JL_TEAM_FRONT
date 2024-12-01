@@ -1,22 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class SettingsScreen extends StatelessWidget {
-  final bool isDarkMode;
-  final double fontSize;
-  final String fontFamily;
-  final ValueChanged<bool> onThemeChanged;
-  final ValueChanged<double> onFontSizeChanged;
-  final ValueChanged<String> onFontFamilyChanged;
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
 
-  const SettingsScreen({
-    super.key,
-    required this.isDarkMode,
-    required this.fontSize,
-    required this.fontFamily,
-    required this.onThemeChanged,
-    required this.onFontSizeChanged,
-    required this.onFontFamilyChanged,
-  });
+  @override
+  _SettingsScreenState createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  bool isDarkMode = false;
+  double fontSize = 16.0;
+  String fontFamily = 'Roboto';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  // Load saved settings from SharedPreferences
+  void _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isDarkMode = prefs.getBool('isDarkMode') ?? false;
+      fontSize = prefs.getDouble('fontSize') ?? 16.0;
+      fontFamily = prefs.getString('fontFamily') ?? 'Roboto';
+    });
+  }
+
+  void _updateTheme(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', value);
+    setState(() {
+      isDarkMode = value;
+    });
+  }
+
+  void _updateFontSize(double value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('fontSize', value);
+    setState(() {
+      fontSize = value;
+    });
+  }
+
+  void _updateFontFamily(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('fontFamily', value);
+    setState(() {
+      fontFamily = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +78,7 @@ class SettingsScreen extends StatelessWidget {
                   .toList(),
               onChanged: (newSize) {
                 if (newSize != null) {
-                  onFontSizeChanged(newSize); // Always pass a valid fontSize
+                  _updateFontSize(newSize); // Always pass a valid fontSize
                 }
               },
             ),
@@ -64,7 +99,7 @@ class SettingsScreen extends StatelessWidget {
                   .toList(),
               onChanged: (newFont) {
                 if (newFont != null) {
-                  onFontFamilyChanged(newFont);
+                  _updateFontFamily(newFont);
                 }
               },
             ),
@@ -77,7 +112,7 @@ class SettingsScreen extends StatelessWidget {
             subtitle: Text(isDarkMode ? 'Enabled' : 'Disabled'),
             trailing: Switch(
               value: isDarkMode,
-              onChanged: onThemeChanged, // Call the callback to toggle theme
+              onChanged: _updateTheme,
             ),
           ),
         ],
