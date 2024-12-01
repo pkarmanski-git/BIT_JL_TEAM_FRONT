@@ -216,26 +216,38 @@ class HobbyService{
   }
 
 
-  Future<List<HobbyDTO>> getUserHobbies(User user) async{
+  Future<List<HobbyDTO>> getUserHobbies(User user) async {
     const endpoint = "/profile/get-my-hobbies/";
     final url = Uri.parse('$baseUrl$endpoint');
+
     try {
       logger.i(url);
+
       String? accessToken = user.token?.access;
-      final response = await http.post(
-          url,
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $accessToken',
-          }
-          ).timeout(duration);
-      logger.i(response.body);
-      if(response.statusCode != 200 && response.statusCode != 201){
-        throw Exception('Error in POST request: $response');
+      if (accessToken == null) {
+        throw Exception('Access token is null');
       }
-      return json.decode(response.body).map((item) => HobbyDTO.fromJson(item));
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+      ).timeout(duration);
+
+      logger.i(response.body);
+
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        throw Exception('Error in GET request: ${response.statusCode} ${response.body}');
+      }
+
+      List<dynamic> responseList = json.decode(response.body);
+      return responseList.map((item) => HobbyDTO.fromJson(item)).toList();
+
     } catch (e) {
-      throw Exception('Error in POST request: $e');
+      logger.e('Error in getUserHobbies: $e');
+      throw Exception('Error while fetching hobbies: $e');
     }
   }
 

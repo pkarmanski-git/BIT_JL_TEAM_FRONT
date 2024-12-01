@@ -66,8 +66,6 @@ class AccountScreen extends StatelessWidget {
                             builder: (context) => RadarChartWidget(personalityData: service.user.profile!.character),
                           ),
                         );
-                      }else{
-                        //TODO error
                       }
                     },
                   ),
