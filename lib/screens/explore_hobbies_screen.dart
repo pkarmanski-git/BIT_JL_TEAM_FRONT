@@ -21,19 +21,46 @@ class SwipeScreen extends StatefulWidget {
   _SwipeScreenState createState() => _SwipeScreenState();
 }
 
-class _SwipeScreenState extends State<SwipeScreen> {
+class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin {
   List<Hobby> hobbies = [];
   MatchEngine? _matchEngine;
   bool showDetails = false;
   Hobby? currentHobby;
   bool isLoading = false;
   OverlayEntry? overlayEntry; // Store the overlay entry
-  TextEditingController textController = TextEditingController();
+
+  late AnimationController _animationController;
+  late Animation<Offset> _offsetAnimation;
+  late Animation<double> _heightAnimation;
+  bool _isDetailsVisible = false; // Track visibility of the details
 
   @override
   void initState() {
     super.initState();
     _loadHobbies();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    // Animation for sliding up the content
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset(0, 0), // initial position (no movement)
+      end: Offset(0, -0.3), // end position (move up)
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+
+    // Animation for expanding the hidden area (height)
+    _heightAnimation = Tween<double>(
+      begin: 0.0, // Start with 0 height (hidden)
+      end: 150.0, // Expand to desired height
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
   }
 
   Future<void> _loadHobbies() async {
@@ -69,67 +96,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
         isLoading = false;
       });
     }
-  }
-
-  void _showOverlay(BuildContext context) {
-    overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        top: 200, // Adjust to your needs
-        left: 50,
-        right: 50,
-        child: Material(
-          color: Colors.transparent,
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                overlayEntry?.remove();
-                overlayEntry = null;
-              });
-            },
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 10,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: textController,
-                    decoration: InputDecoration(
-                      labelText: "Enter some text",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Handle the text input, maybe save or submit it
-                      print("Text: ${textController.text}");
-                      setState(() {
-                        overlayEntry?.remove();
-                        overlayEntry = null;
-                      });
-                    },
-                    child: const Text("Submit"),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-
-    Overlay.of(context)?.insert(overlayEntry!);
   }
 
   @override
@@ -173,7 +139,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            HobbyLoader(), // Replaced CircularProgressIndicator with HobbyLoader
+            HobbyLoader(),
             const SizedBox(height: 85),
             const Text(
               "Loading hobbies... Please wait!",
@@ -192,6 +158,23 @@ class _SwipeScreenState extends State<SwipeScreen> {
           : Column(
         children: [
           Expanded(child: _buildSwipeView(context)),
+          AnimatedBuilder(
+            animation: _heightAnimation,
+            builder: (context, child) {
+              return Container(
+                height: _heightAnimation.value,
+                width: double.infinity,
+                color: Colors.grey[200],
+                padding: const EdgeInsets.all(16.0),
+                child: currentHobby != null && currentHobby!.summary.isNotEmpty
+                    ? Text(
+                  currentHobby!.summary,
+                  style: TextStyle(fontSize: 18),
+                )
+                    : const SizedBox.shrink(),
+              );
+            },
+          )
         ],
       ),
     );
@@ -206,7 +189,15 @@ class _SwipeScreenState extends State<SwipeScreen> {
       matchEngine: _matchEngine!,
       itemBuilder: (context, index) {
         final hobby = hobbies[index];
+        // Zmienna `hobby` zawiera dane obiektu, który jest aktualnie wyświetlany.
+
         return GestureDetector(
+          onTap: () {
+            // Możesz np. przypisać dane do zmiennej, żeby później użyć
+            setState(() {
+              currentHobby = hobby;
+            });
+          },
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
@@ -239,16 +230,10 @@ class _SwipeScreenState extends State<SwipeScreen> {
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.arrow_upward),
-                  onPressed: () => _showOverlay(context),
-                  color: Colors.black,
-                  iconSize: 30,
-                ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    hobby.name,
+                    hobby.name, // Tekst wyciągnięty z obiektu hobby
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -256,6 +241,22 @@ class _SwipeScreenState extends State<SwipeScreen> {
                     ),
                     textAlign: TextAlign.center,
                   ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.keyboard_arrow_up),
+                  onPressed: () {
+                    if (_isDetailsVisible) {
+                      _animationController.reverse();
+                    } else {
+                      _animationController.forward();
+                    }
+
+                    setState(() {
+                      _isDetailsVisible = !_isDetailsVisible;
+                    });
+                  },
+                  color: Colors.black,
+                  iconSize: 30,
                 ),
               ],
             ),
@@ -269,6 +270,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
       nopeTag: const Icon(Icons.close, color: Colors.red, size: 100),
     );
   }
+
 
   void _showCompletionDialog() {
     showDialog(
@@ -299,7 +301,6 @@ class _SwipeScreenState extends State<SwipeScreen> {
   }
 }
 
-// The HobbyLoader widget, as previously provided.
 class HobbyLoader extends StatefulWidget {
   @override
   _HobbyLoaderState createState() => _HobbyLoaderState();
@@ -346,7 +347,7 @@ class _HobbyLoaderState extends State<HobbyLoader>
           double angle = (2 * pi * index) / hobbyIcons.length;
           return Transform.translate(
             offset: Offset(
-              60 * cos(angle), // Zmniejszenie okręgu z 80 na 60
+              60 * cos(angle),
               60 * sin(angle),
             ),
             child: Icon(

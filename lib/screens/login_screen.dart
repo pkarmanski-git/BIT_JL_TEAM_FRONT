@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     ServiceResponse response = await widget.service.login(emailController.text, passwordController.text);
     widget.service.getUserProfile();
-    widget.service.getUserHobby();
+    await widget.service.getUserHobby();
 
     setState(() {
       isLoading = false;
