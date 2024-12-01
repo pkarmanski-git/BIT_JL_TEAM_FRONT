@@ -19,12 +19,12 @@ class BottomNavigationBarComponent extends StatelessWidget {
           label: 'Account',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.people),
-          label: 'My Communities',
-        ),
-        BottomNavigationBarItem(
           icon: Icon(Icons.explore),
           label: 'Explore Hobbies',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.people),
+          label: 'My Communities',
         ),
       ],
       currentIndex: selectedIndex,
