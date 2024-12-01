@@ -13,7 +13,7 @@ import '../service/service.dart';
 class QuizScreen extends StatefulWidget {
   final Service service;
 
-  const QuizScreen({super.key, required this.service});
+  const QuizScreen({super.key, required this.service, required String nickname});
 
   @override
   _QuizScreenState createState() => _QuizScreenState();

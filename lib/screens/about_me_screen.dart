@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'quiz_screen.dart';
 import '../constants/colors.dart';
-import '../service/service.dart';  // Upewnij się, że importujesz Service
+import '../service/service.dart';
 
 class AboutMeScreen extends StatefulWidget {
-  final Service service;  // Dodaj pole service
+  final Service service;
 
-  const AboutMeScreen({super.key, required this.service});  // Zaktualizuj konstruktor
+  const AboutMeScreen({super.key, required this.service});
 
   @override
   _AboutMeScreenState createState() => _AboutMeScreenState();
@@ -18,6 +19,50 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
 
   final List<String> _locations = ['New York', 'London', 'Tokyo'];
 
+  String? _errorMessage;
+
+  void _validateAndContinue() {
+    setState(() {
+      _errorMessage = null; // Reset error message
+    });
+
+    if (_nicknameController.text.isEmpty) {
+      setState(() {
+        _errorMessage = "Nickname is required.";
+      });
+      return;
+    }
+    if (_ageController.text.isEmpty) {
+      setState(() {
+        _errorMessage = "Age is required.";
+      });
+      return;
+    }
+    if (int.tryParse(_ageController.text) == null || int.parse(_ageController.text) <= 0) {
+      setState(() {
+        _errorMessage = "Please enter a valid age.";
+      });
+      return;
+    }
+    if (_selectedLocation == null) {
+      setState(() {
+        _errorMessage = "Location is required.";
+      });
+      return;
+    }
+
+    // Navigate to the next screen if validation passes
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuizScreen(
+          service: widget.service,
+          nickname: _nicknameController.text,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,76 +70,90 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
         title: const Text('About Me'),
         backgroundColor: AppColors.primaryColor,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            Text(
-              'Tell us about yourself',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textColor,
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _nicknameController,
-              decoration: const InputDecoration(
-                labelText: 'Nickname',
-                prefixIcon: Icon(Icons.person),
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: _ageController,
-              decoration: const InputDecoration(
-                labelText: 'Age',
-                prefixIcon: Icon(Icons.calendar_today),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 10),
-            DropdownButtonFormField<String>(
-              value: _selectedLocation,
-              decoration: const InputDecoration(
-                labelText: 'Location',
-                prefixIcon: Icon(Icons.location_on),
-              ),
-              items: _locations.map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (newValue) {
-                setState(() {
-                  _selectedLocation = newValue;
-                });
-              },
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.buttonColor,
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-              onPressed: () {
-                // Obsługa zapisu danych
-                // Możesz użyć widget.service do zapisania lub wysłania danych
-              },
-              child: Text(
-                'Save',
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Tell us about yourself',
                 style: TextStyle(
-                  color: AppColors.buttonTextColor,
-                  fontSize: 18,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textColor,
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 20),
+              TextField(
+                controller: _nicknameController,
+                decoration: const InputDecoration(
+                  labelText: 'Nickname',
+                  prefixIcon: Icon(Icons.person),
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _ageController,
+                decoration: const InputDecoration(
+                  labelText: 'Age',
+                  prefixIcon: Icon(Icons.calendar_today),
+                ),
+                keyboardType: TextInputType.number,
+              ),
+              const SizedBox(height: 10),
+              DropdownButtonFormField<String>(
+                value: _selectedLocation,
+                decoration: const InputDecoration(
+                  labelText: 'Location',
+                  prefixIcon: Icon(Icons.location_on),
+                ),
+                items: _locations.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  setState(() {
+                    _selectedLocation = newValue;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              if (_errorMessage != null) // Display error message if any
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Text(
+                    _errorMessage!,
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.buttonColor,
+                  minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                onPressed: _validateAndContinue,
+                child: Text(
+                  'Continue',
+                  style: TextStyle(
+                    color: AppColors.buttonTextColor,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

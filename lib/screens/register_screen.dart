@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:jl_team_front_bit/screens/quiz_screen.dart';
+import 'package:jl_team_front_bit/screens/about_me_screen.dart';
 import '../constants/colors.dart';
 import '../enums/service_errors.dart';
 import '../model/service_response.dart';
@@ -19,13 +19,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>(); // Form key for validation
+  final _formKey = GlobalKey<FormState>();
 
   bool isLoading = false;
 
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) {
-      return; // Stop registration if the form is invalid
+      return;
     }
 
     setState(() {
@@ -47,7 +47,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => QuizScreen(service: widget.service),
+          builder: (context) => AboutMeScreen(service: widget.service),
         ),
       );
     } else {
@@ -123,7 +123,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     const SizedBox(height: 30),
-                    // Email field
                     TextFormField(
                       controller: emailController,
                       decoration: const InputDecoration(
@@ -134,7 +133,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       validator: _validateEmail,
                     ),
                     const SizedBox(height: 10),
-                    // Password field
                     TextFormField(
                       controller: passwordController,
                       decoration: const InputDecoration(
@@ -142,10 +140,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         prefixIcon: Icon(Icons.lock),
                       ),
                       obscureText: true,
-                      validator: _validatePassword, // Attach password validator
+                      validator: _validatePassword,
                     ),
                     const SizedBox(height: 10),
-                    // Confirm Password field
                     TextFormField(
                       controller: confirmPasswordController,
                       decoration: const InputDecoration(
@@ -153,7 +150,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         prefixIcon: Icon(Icons.lock_outline),
                       ),
                       obscureText: true,
-                      validator: _validateConfirmPassword, // Attach confirm password validator
+                      validator: _validateConfirmPassword,
                     ),
                     const SizedBox(height: 30),
                   ],
@@ -161,11 +158,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ),
           ),
-          // Positioned Register button at the bottom
           Positioned(
-            bottom: 30, // Distance from bottom edge of screen
-            left: 40, // Same left padding as the other elements
-            right: 40, // Same right padding as the other elements
+            bottom: 30,
+            left: 40,
+            right: 40,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.buttonColor,
@@ -174,7 +170,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   borderRadius: BorderRadius.circular(25),
                 ),
               ),
-              onPressed: isLoading ? null : _register, // Call _register if not loading
+              onPressed: isLoading ? null : _register,
               child: isLoading
                   ? CircularProgressIndicator(color: AppColors.buttonTextColor)
                   : Text(
