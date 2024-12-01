@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:jl_team_front_bit/enums/service_errors.dart';
 import 'package:jl_team_front_bit/model/hobby.dart';
@@ -139,26 +141,36 @@ class _SwipeScreenState extends State<SwipeScreen> {
             child: Column(
               children: [
                 Expanded(
-                  child: Image.network(
-                    hobby.image ?? "",
+                  child: hobby.image != null && hobby.image!.isNotEmpty
+                      ? Image.memory(
+                    base64Decode(hobby.image!),
                     fit: BoxFit.cover,
                     width: double.infinity,
                     errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey,
-                        child: const Icon(
-                          Icons.image,
-                          size: 100,
-                          color: Colors.white,
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                    return Container(
+                      color: Colors.grey,
+                      child: const Icon(
+                        Icons.image,
+                        size: 100,
+                        color: Colors.white,
+                      ),
+                    );
+            },
+          )
+              : Container(
+          color: Colors.grey,
+          child: const Icon(
+            Icons.image,
+            size: 100,
+            color: Colors.white,
+          ),
+        ),
+
+        ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    hobby.summary,
+                    hobby.name,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -192,7 +204,7 @@ class _SwipeScreenState extends State<SwipeScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            currentHobby!.summary,
+            currentHobby!.name,
             style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -200,11 +212,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
-          Image.network(
-            currentHobby!.image ?? "",
-            height: 200,
-            width: double.infinity,
+          currentHobby?.image != null
+              ? Image.memory(
+            base64Decode(currentHobby!.image!),
             fit: BoxFit.cover,
+            width: double.infinity,
             errorBuilder: (context, error, stackTrace) {
               return Container(
                 color: Colors.grey,
@@ -215,12 +227,21 @@ class _SwipeScreenState extends State<SwipeScreen> {
                 ),
               );
             },
+          )
+              : Container(
+            color: Colors.grey,
+            child: const Icon(
+              Icons.image,
+              size: 100,
+              color: Colors.white,
+            ),
           ),
+
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              currentHobby!.summary,
+              currentHobby!.name,
               style: const TextStyle(fontSize: 18),
               textAlign: TextAlign.center,
             ),
