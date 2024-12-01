@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'intro_screen.dart';
 import 'quiz_screen.dart';
 import '../constants/colors.dart';
 import '../service/service.dart';
@@ -51,17 +52,15 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
       return;
     }
 
-    // Navigate to the next screen if validation passes
+    // Navigate to the Intro Screen if validation passes
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => QuizScreen(
-          service: widget.service,
-          nickname: _nicknameController.text,
-        ),
+        builder: (context) => IntroScreen(service: widget.service),
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
