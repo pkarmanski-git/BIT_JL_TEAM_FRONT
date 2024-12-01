@@ -24,7 +24,7 @@ class SwipeScreen extends StatefulWidget {
 
 class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin {
   List<Hobby> hobbies = [];
-  List<Uint8List?> decodedImages = []; // Lista zdekodowanych obrazów
+  List<Uint8List?> decodedImages = [];
   MatchEngine? _matchEngine;
   bool isLoading = false;
 
@@ -60,7 +60,6 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
       if (response.error == ServiceErrors.ok) {
         hobbies = response.data!;
 
-        // Zdekoduj obrazy przed utworzeniem kart
         decodedImages = hobbies.map((hobby) {
           if (hobby.image != null && hobby.image!.isNotEmpty) {
             return base64Decode(hobby.image!);
@@ -207,89 +206,83 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
     }
 
     return SwipeCards(
-      matchEngine: _matchEngine!,
-      itemBuilder: (context, index) {
-        Hobby hobby = hobbies[index];
-        Uint8List? imageData = decodedImages[index]; // Pobierz zdekodowany obraz
-        return Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            children: [
-              Expanded(
-                child: imageData != null
-                    ? Image.memory(
-                  imageData,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      width: double.infinity,
-                      color: Colors.grey,
-                      child: const Icon(
-                        Icons.image,
-                        size: 100,
-                        color: Colors.white,
-                      ),
-                    );
+        matchEngine: _matchEngine!,
+        itemBuilder: (context, index) {
+          Hobby hobby = hobbies[index];
+          Uint8List? imageData = decodedImages[index];
+          return Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              children: [
+                Expanded(
+                  child: imageData != null
+                      ? Image.memory(
+                    imageData,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: double.infinity,
+                        color: Colors.grey,
+                        child: const Icon(
+                          Icons.image,
+                          size: 100,
+                          color: Colors.white,
+                        ),
+                      );
+                    },
+                  )
+                      : Container(
+                    width: double.infinity,
+                    color: Colors.grey,
+                    child: const Icon(
+                      Icons.image,
+                      size: 100,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    hobby.name,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(_isDetailsVisible
+                      ? Icons.keyboard_arrow_down
+                      : Icons.keyboard_arrow_up),
+                  onPressed: () {
+                    if (_isDetailsVisible) {
+                      _animationController.reverse();
+                    } else {
+                      _animationController.forward();
+                    }
+      
+                    setState(() {
+                      _isDetailsVisible = !_isDetailsVisible;
+                    });
                   },
-                )
-                    : Container(
-                  width: double.infinity,
-                  color: Colors.grey,
-                  child: const Icon(
-                    Icons.image,
-                    size: 100,
-                    color: Colors.white,
-                  ),
+                  color: Colors.black,
+                  iconSize: 30,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  hobby.name,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textColor,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              IconButton(
-                icon: Icon(_isDetailsVisible
-                    ? Icons.keyboard_arrow_down
-                    : Icons.keyboard_arrow_up),
-                onPressed: () {
-                  if (_isDetailsVisible) {
-                    _animationController.reverse();
-                  } else {
-                    _animationController.forward();
-                  }
-
-                  setState(() {
-                    _isDetailsVisible = !_isDetailsVisible;
-                  });
-                },
-                color: Colors.black,
-                iconSize: 30,
-              ),
-            ],
-          ),
-        );
-      },
-      onStackFinished: _showCompletionDialog,
-      upSwipeAllowed: false,
-      fillSpace: true,
-      // onSwipeLeft: (index, _) {
-      //   // Obsługuje akcję dla wysunięcia karty w lewo
-      //   print('Karta $index została przesunięta w lewo');
-      // },
-      // onSwipeRight: (index, _) {
-      //   // Obsługuje akcję dla wysunięcia karty w prawo
-      //   print('Karta $index została przesunięta w prawo');
-      // },
+              ],
+            ),
+          );
+        },
+        onStackFinished: _showCompletionDialog,
+        upSwipeAllowed: false,
+        fillSpace: true,
+        likeTag: Icon(Icons.thumb_up, color: Colors.green, size: 100,),
+        nopeTag: Icon(Icons.thumb_down, color: Colors.red,  size: 100,),
     );
   }
 
@@ -304,7 +297,6 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                // Możesz wykonać dodatkowe akcje, np. powrót do poprzedniego ekranu
               },
               child: const Text('OK'),
             ),
