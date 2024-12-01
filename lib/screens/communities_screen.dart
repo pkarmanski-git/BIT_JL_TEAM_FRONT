@@ -1,14 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import '../model/service_response.dart';
-import '/model/comment.dart';
 import '/model/community.dart';
-import '/model/post.dart';
 import '../constants/colors.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'community_posts_screen.dart';
 import '../service/service.dart';
 
 class CommunitiesScreen extends StatefulWidget {

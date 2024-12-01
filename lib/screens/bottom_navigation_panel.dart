@@ -15,16 +15,16 @@ class BottomNavigationBarComponent extends StatelessWidget {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Account',
+        ),
+        BottomNavigationBarItem(
           icon: Icon(Icons.people),
           label: 'My Communities',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.explore),
           label: 'Explore Hobbies',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Account',
         ),
       ],
       currentIndex: selectedIndex,

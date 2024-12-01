@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jl_team_front_bit/screens/communities_screen.dart';
 import 'package:jl_team_front_bit/screens/explore_hobbies_screen.dart';
 
 import '../service/service.dart';
@@ -18,18 +19,20 @@ class _NavigatorState extends State<NavigatorScreen> {
   int _selectedIndex = 0;
   late AccountScreen accountScreen;
   late SwipeScreen swipeScreen;
+  late CommunitiesScreen communitiesScreen;
 
   late List<Widget> _pages;
 
   @override
   void initState() {
     super.initState();
+    communitiesScreen = CommunitiesScreen(service: widget.service);
     accountScreen = AccountScreen(service: widget.service);
     swipeScreen = SwipeScreen(service: widget.service);
     _pages = <Widget>[
       accountScreen,
       swipeScreen,
-      accountScreen
+      communitiesScreen
     ];
   }
 

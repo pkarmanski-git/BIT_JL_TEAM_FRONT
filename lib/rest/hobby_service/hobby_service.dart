@@ -36,6 +36,9 @@ class HobbyService{
         body: json.encode(data.toJson()),
       ).timeout(duration);
       logger.i(response.body);
+      if(response.statusCode != 200 && response.statusCode != 201){
+        throw Exception('Error in POST request: $response');
+      }
       return Object();
     } catch (e) {
       throw Exception('Error in POST request: $e');
@@ -53,6 +56,9 @@ class HobbyService{
         body: json.encode(data.toJson()),
       ).timeout(duration);
       logger.i(response.body);
+      if(response.statusCode != 200 && response.statusCode != 201){
+        throw Exception('Error in POST request: $response');
+      }
       return TokenDTO.fromJson(json.decode(response.body));
     } catch (e) {
       throw Exception('Error in POST request: $e');
@@ -73,6 +79,9 @@ class HobbyService{
         },
       ).timeout(duration);
       logger.i(response.body);
+      if(response.statusCode != 200 && response.statusCode != 201){
+        throw Exception('Error in POST request: $response');
+      }
       return Object();
     } catch (e) {
       throw Exception('Error in POST request: $e');
@@ -91,6 +100,9 @@ class HobbyService{
         body: json.encode(data.toJson()),
       ).timeout(duration);
       logger.i(response.body);
+      if(response.statusCode != 200 && response.statusCode != 201){
+        throw Exception('Error in POST request: $response');
+      }
       return TokenDTO.fromJson(json.decode(response.body));
     } catch (e) {
       throw Exception('Error in POST request: $e');
