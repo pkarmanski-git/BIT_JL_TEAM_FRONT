@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:jl_team_front_bit/enums/service_errors.dart';
-import 'package:jl_team_front_bit/model/hobby.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import '../constants/colors.dart';
+import '../enums/service_errors.dart';
+import '../model/hobby.dart';
 import '../model/service_response.dart';
 import '../service/service.dart';
 
@@ -13,9 +14,9 @@ class SwipeScreen extends StatefulWidget {
   final Service service;
 
   const SwipeScreen({
-    super.key,
+    Key? key,
     required this.service,
-  });
+  }) : super(key: key);
 
   @override
   _SwipeScreenState createState() => _SwipeScreenState();
@@ -23,16 +24,14 @@ class SwipeScreen extends StatefulWidget {
 
 class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin {
   List<Hobby> hobbies = [];
+  List<Uint8List?> decodedImages = []; // Lista zdekodowanych obrazów
   MatchEngine? _matchEngine;
-  bool showDetails = false;
-  Hobby? currentHobby;
   bool isLoading = false;
-  OverlayEntry? overlayEntry; // Store the overlay entry
 
   late AnimationController _animationController;
-  late Animation<Offset> _offsetAnimation;
   late Animation<double> _heightAnimation;
   bool _isDetailsVisible = false;
+  int currentIndex = 0;
 
   @override
   void initState() {
@@ -43,17 +42,9 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
       duration: const Duration(milliseconds: 500),
     );
 
-    _offsetAnimation = Tween<Offset>(
-      begin: Offset(0, 0), // initial position (no movement)
-      end: Offset(0, -0.3), // end position (move up)
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
-
     _heightAnimation = Tween<double>(
-      begin: 0.0, // Start with 0 height (hidden)
-      end: 300.0, // Expand to desired height
+      begin: 0.0,
+      end: 300.0,
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeInOut,
@@ -67,17 +58,31 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
     try {
       ServiceResponse<List<Hobby>> response = await widget.service.getMatchedHobbies();
       if (response.error == ServiceErrors.ok) {
+        hobbies = response.data!;
+
+        // Zdekoduj obrazy przed utworzeniem kart
+        decodedImages = hobbies.map((hobby) {
+          if (hobby.image != null && hobby.image!.isNotEmpty) {
+            return base64Decode(hobby.image!);
+          } else {
+            return null;
+          }
+        }).toList();
+
         setState(() {
-          hobbies = response.data!;
           _matchEngine = MatchEngine(
-            swipeItems: hobbies.map((hobby) {
+            swipeItems: hobbies.asMap().entries.map((entry) {
+              int index = entry.key;
+              Hobby hobby = entry.value;
               return SwipeItem(
                 content: hobby,
                 likeAction: () {
                   widget.service.updateUserHobby([hobby.id], []);
+                  _onSwipe();
                 },
                 nopeAction: () {
                   widget.service.updateUserHobby([], [hobby.id]);
+                  _onSwipe();
                 },
               );
             }).toList(),
@@ -93,6 +98,18 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
         isLoading = false;
       });
     }
+  }
+
+  void _onSwipe() {
+    setState(() {
+      if (currentIndex < hobbies.length - 1) {
+        currentIndex++;
+      }
+      if (_isDetailsVisible) {
+        _animationController.reverse();
+        _isDetailsVisible = false;
+      }
+    });
   }
 
   @override
@@ -158,24 +175,27 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
           AnimatedBuilder(
             animation: _heightAnimation,
             builder: (context, child) {
+              Hobby? currentHobby = currentIndex < hobbies.length
+                  ? hobbies[currentIndex]
+                  : null;
               return Container(
                 height: _heightAnimation.value,
                 width: double.infinity,
                 color: Colors.grey[200],
                 padding: const EdgeInsets.all(16.0),
-                child: currentHobby != null && currentHobby!.summary.isNotEmpty
+                child: currentHobby != null &&
+                    currentHobby.summary.isNotEmpty
                     ? SingleChildScrollView(
                   child: Text(
-                    currentHobby!.summary,
-                    style: TextStyle(fontSize: 18),
+                    currentHobby.summary,
+                    style: const TextStyle(fontSize: 18),
                     textAlign: TextAlign.justify,
                   ),
                 )
                     : const SizedBox.shrink(),
               );
             },
-          )
-
+          ),
         ],
       ),
     );
@@ -189,71 +209,74 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
     return SwipeCards(
       matchEngine: _matchEngine!,
       itemBuilder: (context, index) {
-        currentHobby = hobbies[index];
+        Hobby hobby = hobbies[index];
+        Uint8List? imageData = decodedImages[index]; // Pobierz zdekodowany obraz
         return Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Column(
-              children: [
-                Expanded(
-                  child: currentHobby?.image != null && currentHobby!.image!.isNotEmpty
-                      ? Image.memory(
-                    base64Decode(currentHobby!.image!),
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        width: double.infinity,
-                        color: Colors.grey,
-                        child: const Icon(
-                          Icons.image,
-                          size: 100,
-                          color: Colors.white,
-                        ),
-                      );
-                    },
-                  )
-                      : Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    child: const Icon(
-                      Icons.image,
-                      size: 100,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    currentHobby!.name,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textColor,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.keyboard_arrow_up),
-                  onPressed: () {
-                    if (_isDetailsVisible) {
-                      _animationController.reverse();
-                    } else {
-                      _animationController.forward();
-                    }
-
-                    setState(() {
-                      _isDetailsVisible = !_isDetailsVisible;
-                    });
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: imageData != null
+                    ? Image.memory(
+                  imageData,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      child: const Icon(
+                        Icons.image,
+                        size: 100,
+                        color: Colors.white,
+                      ),
+                    );
                   },
-                  color: Colors.black,
-                  iconSize: 30,
+                )
+                    : Container(
+                  width: double.infinity,
+                  color: Colors.grey,
+                  child: const Icon(
+                    Icons.image,
+                    size: 100,
+                    color: Colors.white,
+                  ),
                 ),
-              ],
-            ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  hobby.name,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              IconButton(
+                icon: Icon(_isDetailsVisible
+                    ? Icons.keyboard_arrow_down
+                    : Icons.keyboard_arrow_up),
+                onPressed: () {
+                  if (_isDetailsVisible) {
+                    _animationController.reverse();
+                  } else {
+                    _animationController.forward();
+                  }
+
+                  setState(() {
+                    _isDetailsVisible = !_isDetailsVisible;
+                  });
+                },
+                color: Colors.black,
+                iconSize: 30,
+              ),
+            ],
+          ),
         );
       },
       onStackFinished: _showCompletionDialog,
@@ -261,7 +284,6 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
       fillSpace: true,
     );
   }
-
 
   void _showCompletionDialog() {
     showDialog(
@@ -274,6 +296,7 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                // Możesz wykonać dodatkowe akcje, np. powrót do poprzedniego ekranu
               },
               child: const Text('OK'),
             ),
