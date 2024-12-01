@@ -3,6 +3,7 @@ import 'package:jl_team_front_bit/model/service_response.dart';
 import 'package:jl_team_front_bit/screens/explore_hobbies_screen.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import 'dart:convert';
+import 'dart:math'; // Added for math functions
 
 import '../enums/service_errors.dart';
 import '../factories/image_factory.dart';
@@ -106,31 +107,37 @@ class _QuizScreenState extends State<QuizScreen> {
 
   void _onQuizComplete() async {
     setState(() {
-      isLoading = true;
+      isLoading = true; // Show loader
     });
 
     try {
+      // Simulate a delay to display the loader (e.g., 3 seconds)
+      await Future.delayed(Duration(seconds: 3));
+
+      // Upload the quiz answers
       ServiceResponse response = await widget.service.uploadQuiz(answers);
       if (response.error == ServiceErrors.ok) {
+        // Navigate to the chart screen after the loader
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => SwipeScreen(service: widget.service)),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Something went wrong!"))
+          SnackBar(content: Text("Something went wrong!")),
         );
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("An error occurred!"))
+        SnackBar(content: Text("An error occurred!")),
       );
     } finally {
       setState(() {
-        isLoading = false;
+        isLoading = false; // Stop loader
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -139,14 +146,14 @@ class _QuizScreenState extends State<QuizScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Row(
-          mainAxisSize: MainAxisSize.min, // Ensures the title is centered
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.psychology, // Centered icon
+              Icons.psychology,
               color: Colors.white,
               size: 24,
             ),
-            const SizedBox(width: 8), // Spacing between icon and text
+            const SizedBox(width: 8),
             Text(
               'Personality Quiz',
               style: TextStyle(
@@ -160,168 +167,232 @@ class _QuizScreenState extends State<QuizScreen> {
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.teal, Colors.greenAccent], // Gradient background
+              colors: [Colors.teal, Colors.greenAccent],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
           ),
         ),
-        centerTitle: true, // Ensures horizontal centering
+        centerTitle: true,
         elevation: 4,
-        toolbarHeight: 70, // Adjust height if needed
+        toolbarHeight: 70,
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Stack(
-              children: [
-                LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor: Colors.grey[300],
-                  color: Colors.teal,
-                  minHeight: 20,
-                ),
-                Positioned.fill(
-                  child: Center(
-                    child: Text(
-                      '${currentQuestionIndex}/${questions.length} Questions Answered',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Stack(
+                  children: [
+                    LinearProgressIndicator(
+                      value: progress,
+                      backgroundColor: Colors.grey[300],
+                      color: Colors.teal,
+                      minHeight: 20,
+                    ),
+                    Positioned.fill(
+                      child: Center(
+                        child: Text(
+                          '${currentQuestionIndex}/${questions.length} Questions Answered',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          // Wyświetlanie loadera, jeśli jest w trakcie ładowania
-          if (isLoading)
-            Center(
-              child: CircularProgressIndicator(),
-            )
-          else
-            Expanded(
-              child: Center(
-                child: _swipeItems.isNotEmpty
-                    ? Stack(
-                  children: [
-                    // Gradient tła
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Colors.red.withOpacity(0.3), Colors.transparent],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
+              ),
+              Expanded(
+                child: Center(
+                  child: _swipeItems.isNotEmpty
+                      ? Stack(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Colors.red.withOpacity(0.3), Colors.transparent],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [Colors.transparent, Colors.green.withOpacity(0.3)],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Colors.transparent, Colors.green.withOpacity(0.3)],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    // SwipeCards
-                    SwipeCards(
-                      matchEngine: _matchEngine,
-                      itemBuilder: (BuildContext context, int index) {
-                        Question question = questions[index];
-                        return Card(
-                          elevation: 6,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                          child: Container(
-                            decoration: BoxDecoration(
+                        ],
+                      ),
+                      SwipeCards(
+                        matchEngine: _matchEngine,
+                        itemBuilder: (BuildContext context, int index) {
+                          Question question = questions[index];
+                          return Card(
+                            elevation: 6,
+                            shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
-                              image: question.isImageQuestion
-                                  ? null
-                                  : DecorationImage(
-                                image: AssetImage(
-                                  question.imagePath ?? defaultBackgroundImage,
-                                ),
-                                fit: BoxFit.cover,
-                                colorFilter: ColorFilter.mode(
-                                  Colors.white.withOpacity(0.3), // Apply a light color (e.g., white)
-                                  BlendMode.lighten,             // Use BlendMode.lighten for a faded effect
-                                ),
-                              ),
                             ),
-                            child: question.isImageQuestion
-                                ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Expanded(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(16),
-                                      topRight: Radius.circular(16),
-                                    ),
-                                    child: Image.asset(
-                                      question.imagePath!,
-                                      fit: BoxFit.cover,
-                                    ),
+                            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                image: question.isImageQuestion
+                                    ? null
+                                    : DecorationImage(
+                                  image: AssetImage(
+                                    question.imagePath ?? defaultBackgroundImage,
+                                  ),
+                                  fit: BoxFit.cover,
+                                  colorFilter: ColorFilter.mode(
+                                    Colors.white.withOpacity(0.3),
+                                    BlendMode.lighten,
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(16.0),
+                              ),
+                              child: question.isImageQuestion
+                                  ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(16),
+                                        topRight: Radius.circular(16),
+                                      ),
+                                      child: Image.asset(
+                                        question.imagePath!,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Text(
+                                      question.text,
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ],
+                              )
+                                  : Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24.0),
                                   child: Text(
                                     question.text,
                                     style: TextStyle(
-                                      fontSize: 24,
-                                      color: Colors.black,
+                                      fontSize: 28,
+                                      color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
-                              ],
-                            )
-                                : Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(24.0),
-                                child: Text(
-                                  question.text,
-                                  style: TextStyle(
-                                    fontSize: 28,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                      onStackFinished: () {
-                        if (answers.length < questions.length) {
-                          _onQuizComplete();
-                        }
-                      },
-                      upSwipeAllowed: false,
-                      fillSpace: true,
-                    ),
-                  ],
-                )
-                    : Text('No questions available'),
+                          );
+                        },
+                        onStackFinished: () {
+                          if (answers.length < questions.length) {
+                            _onQuizComplete();
+                          }
+                        },
+                        upSwipeAllowed: false,
+                        fillSpace: true,
+                      ),
+                    ],
+                  )
+                      : Text('No questions available'),
+                ),
+              ),
+            ],
+          ),
+          if (isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.01), // Semi-transparent overlay
+              child: Center(
+                child: HobbyLoader(), // Custom loader widget
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+// Add the HobbyLoader widget
+class HobbyLoader extends StatefulWidget {
+  @override
+  _HobbyLoaderState createState() => _HobbyLoaderState();
+}
+
+class _HobbyLoaderState extends State<HobbyLoader> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  final List<IconData> hobbyIcons = [
+    Icons.sports_basketball,
+    Icons.music_note,
+    Icons.camera_alt,
+    Icons.book,
+    Icons.palette,
+    Icons.computer,
+    Icons.directions_bike,
+    Icons.flight,
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 4),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RotationTransition(
+      turns: _controller,
+      child: Stack(
+        alignment: Alignment.center,
+        children: hobbyIcons.map((iconData) {
+          int index = hobbyIcons.indexOf(iconData);
+          double angle = (2 * pi * index) / hobbyIcons.length;
+          return Transform.translate(
+            offset: Offset(
+              80 * cos(angle), // Increase from 60 to 80 for larger circle
+              80 * sin(angle),
+            ),
+            child: Icon(
+              iconData,
+              size: 40, // Increase from 30 to 40
+              color: Colors.teal,
+            ),
+          );
+        }).toList(),
       ),
     );
   }
