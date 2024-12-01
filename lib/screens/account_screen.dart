@@ -37,7 +37,7 @@ class AccountScreen extends StatelessWidget {
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.deepPurpleAccent, Colors.indigoAccent],
+              colors: [Colors.teal, Colors.greenAccent],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),

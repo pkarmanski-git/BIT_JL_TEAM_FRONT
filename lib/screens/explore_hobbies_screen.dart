@@ -53,7 +53,7 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
 
     _heightAnimation = Tween<double>(
       begin: 0.0, // Start with 0 height (hidden)
-      end: 150.0, // Expand to desired height
+      end: 300.0, // Expand to desired height
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeInOut,
@@ -190,8 +190,7 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
       matchEngine: _matchEngine!,
       itemBuilder: (context, index) {
         currentHobby = hobbies[index];
-        return GestureDetector(
-          child: Card(
+        return Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
@@ -255,7 +254,6 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
                 ),
               ],
             ),
-          ),
         );
       },
       onStackFinished: _showCompletionDialog,
