@@ -151,7 +151,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => RadarChartWidget(
-                      personalityData: widget.service.user.profile!.character,
+                      personalityData: widget.service.user.profile!.character!,
                     ),
                   ),
                 );
