@@ -60,14 +60,8 @@ class AccountScreen extends StatelessWidget {
                     icon: Icons.settings,
                     title: 'Settings',
                     onTap: () {
-                      if(service.user.profile != null){
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RadarChartWidget(personalityData: service.user.profile!.character),
-                          ),
-                        );
-                      }
+                      // Navigate to the settings screen using the named route
+                      Navigator.pushNamed(context, '/settings');
                     },
                   ),
                   _buildSettingsCard(
@@ -199,6 +193,7 @@ class AccountScreen extends StatelessWidget {
     );
   }
 }
+
 
 
 class MyHobbiesScreen extends StatelessWidget {
