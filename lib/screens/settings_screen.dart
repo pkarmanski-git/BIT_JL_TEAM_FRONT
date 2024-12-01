@@ -3,15 +3,19 @@ import 'package:flutter/material.dart';
 class SettingsScreen extends StatelessWidget {
   final bool isDarkMode;
   final double fontSize;
+  final String fontFamily;
   final ValueChanged<bool> onThemeChanged;
   final ValueChanged<double> onFontSizeChanged;
+  final ValueChanged<String> onFontFamilyChanged;
 
   const SettingsScreen({
     super.key,
     required this.isDarkMode,
     required this.fontSize,
+    required this.fontFamily,
     required this.onThemeChanged,
     required this.onFontSizeChanged,
+    required this.onFontFamilyChanged,
   });
 
   @override
@@ -40,6 +44,27 @@ class SettingsScreen extends StatelessWidget {
               onChanged: (newSize) {
                 if (newSize != null) {
                   onFontSizeChanged(newSize); // Always pass a valid fontSize
+                }
+              },
+            ),
+          ),
+          const Divider(),
+          // Font Family Setting
+          ListTile(
+            leading: const Icon(Icons.font_download),
+            title: const Text('Font Family'),
+            subtitle: Text('Current font: $fontFamily'),
+            trailing: DropdownButton<String>(
+              value: fontFamily,
+              items: ['Roboto', 'OpenSans', 'Lato', 'Merriweather']
+                  .map((font) => DropdownMenuItem(
+                value: font,
+                child: Text(font),
+              ))
+                  .toList(),
+              onChanged: (newFont) {
+                if (newFont != null) {
+                  onFontFamilyChanged(newFont);
                 }
               },
             ),

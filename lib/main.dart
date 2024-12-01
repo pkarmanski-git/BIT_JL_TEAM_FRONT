@@ -28,6 +28,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool _isDarkMode = false;
   double _fontSize = 16.0;
+  String _fontFamily = 'Roboto'; // Default font family
 
   @override
   void initState() {
@@ -40,6 +41,7 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _isDarkMode = prefs.getBool('isDarkMode') ?? false;
       _fontSize = prefs.getDouble('fontSize') ?? 16.0;
+      _fontFamily = prefs.getString('fontFamily') ?? 'Roboto';
     });
   }
 
@@ -59,6 +61,14 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void _updateFontFamily(String fontFamily) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('fontFamily', fontFamily);
+    setState(() {
+      _fontFamily = fontFamily;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -69,6 +79,17 @@ class _MyAppState extends State<MyApp> {
         textTheme: ThemeData.dark().textTheme.copyWith(
           bodyLarge: TextStyle(
             fontSize: _fontSize,
+            fontFamily: _fontFamily,
+            color: AppColors.textColor,
+          ),
+          bodyMedium: TextStyle(
+            fontSize: _fontSize,
+            fontFamily: _fontFamily,
+            color: AppColors.textColor,
+          ),
+          bodySmall: TextStyle(
+            fontSize: _fontSize,
+            fontFamily: _fontFamily,
             color: AppColors.textColor,
           ),
         ),
@@ -82,6 +103,17 @@ class _MyAppState extends State<MyApp> {
         textTheme: ThemeData.light().textTheme.copyWith(
           bodyLarge: TextStyle(
             fontSize: _fontSize,
+            fontFamily: _fontFamily,
+            color: AppColors.textColor,
+          ),
+          bodyMedium: TextStyle(
+            fontSize: _fontSize,
+            fontFamily: _fontFamily,
+            color: AppColors.textColor,
+          ),
+          bodySmall: TextStyle(
+            fontSize: _fontSize,
+            fontFamily: _fontFamily,
             color: AppColors.textColor,
           ),
         ),

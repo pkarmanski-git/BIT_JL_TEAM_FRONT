@@ -61,8 +61,24 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
+
 # The following section is specific to Flutter packages.
 flutter:
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/RobotoRegular.ttf
+    - family: OpenSans
+      fonts:
+        - asset: assets/fonts/OpenSans.ttf
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/Logopixies.ttf
+    - family: Merriweather
+      fonts:
+        - asset: assets/fonts/Merriweather.ttf
+
+
   uses-material-design: true
   assets:
     - assets/favicon.png
