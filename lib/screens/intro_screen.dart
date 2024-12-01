@@ -17,7 +17,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
       "Let's Discover Your Personality!\nGet ready to answer some fun questions.";
   String displayedText = "";
   int currentIndex = 0;
-  bool reverseTyping = false; // To control reverse text animation
+  bool reverseTyping = false;
   bool showAgreeGif = false;
   bool showDisagreeGif = false;
 
@@ -33,12 +33,12 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
 
   void _setupBackgroundAnimation() {
     _colorController = AnimationController(
-      duration: const Duration(seconds: 2), // Duration for smooth color change
+      duration: const Duration(seconds: 2),
       vsync: this,
     );
     _backgroundColor = ColorTween(
       begin: Colors.teal.shade50,
-      end: Colors.green.shade200, // Initial green for "AGREE"
+      end: Colors.green.shade200,
     ).animate(_colorController);
   }
 
@@ -52,11 +52,10 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
       } else if (!reverseTyping && currentIndex == fullText.length) {
         Future.delayed(const Duration(seconds: 2), () {
           setState(() {
-            reverseTyping = true; // Begin reverse typing after 2 seconds
+            reverseTyping = true;
           });
         });
       } else if (reverseTyping && displayedText.isNotEmpty) {
-        // Reverse typing happens faster
         Timer(const Duration(milliseconds: 20), () {
           setState(() {
             displayedText = displayedText.substring(0, displayedText.length - 1);
@@ -70,19 +69,18 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
   }
 
   void _showGifs() {
-    // Show "AGREE" gif
     setState(() {
       showAgreeGif = true;
     });
-    _colorController.forward(); // Smoothly change to green
+    _colorController.forward();
     Future.delayed(const Duration(seconds: 3), () {
       setState(() {
         showAgreeGif = false;
         showDisagreeGif = true;
-        _colorController.reverse(); // Smoothly change to red
+        _colorController.reverse();
         _backgroundColor = ColorTween(
-          begin: Colors.red.shade200, // Start with lighter red
-          end: Colors.red.shade800, // Transition to darker red
+          begin: Colors.red.shade200,
+          end: Colors.red.shade800,
         ).animate(_colorController);
       });
       Future.delayed(const Duration(seconds: 3), () {
@@ -111,7 +109,6 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Show typing animation text
                     if (displayedText.isNotEmpty)
                       Text(
                         displayedText,
@@ -123,7 +120,6 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                         ),
                         textAlign: TextAlign.center,
                       ),
-                    // Show "AGREE" gif
                     if (showAgreeGif)
                       Column(
                         children: [

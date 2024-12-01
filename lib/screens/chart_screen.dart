@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class RadarChartWidget extends StatefulWidget {
-  final Map<String, double> personalityData;
+  final Map<String, int> personalityData;
 
   const RadarChartWidget({Key? key, required this.personalityData})
       : super(key: key);
@@ -14,16 +14,16 @@ class RadarChartWidget extends StatefulWidget {
 class _RadarChartWidgetState extends State<RadarChartWidget> {
   int selectedDataSetIndex = -1;
 
-  // Define colors for customization
-  final Color radarFillColor = Colors.greenAccent.withOpacity(0.3); // Pastel green
-  final Color radarBorderColor = Colors.greenAccent; // Match pastel theme
-  final Color selectedBorderColor = Colors.teal; // Slightly darker green
+  final Color radarFillColor = Colors.greenAccent.withOpacity(0.3);
+  final Color radarBorderColor = Colors.greenAccent;
+  final Color selectedBorderColor = Colors.teal;
 
   @override
   Widget build(BuildContext context) {
-    // Extract features (keys) and values from the personality data
     final List<String> features = widget.personalityData.keys.toList();
-    final List<double> values = widget.personalityData.values.toList();
+    final List<double> values = widget.personalityData.values
+        .map((e) => (e as num).toDouble())
+        .toList();
 
     return Scaffold(
       backgroundColor: Colors.green[50], // Pastel pink background

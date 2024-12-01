@@ -59,7 +59,6 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
     );
     widget.service.profileUser(profileMe);
 
-    // Navigate to the next screen if validation passes
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(

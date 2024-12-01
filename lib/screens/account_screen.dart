@@ -3,6 +3,7 @@ import 'package:jl_team_front_bit/enums/service_errors.dart';
 import 'package:jl_team_front_bit/model/service_response.dart';
 import 'package:jl_team_front_bit/screens/welcome_screen.dart';
 import '../service/service.dart';
+import 'chart_screen.dart';
 
 class AccountScreen extends StatelessWidget {
   final Service service;
@@ -14,16 +15,16 @@ class AccountScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Row(
-          mainAxisSize: MainAxisSize.min, // Center-aligns the title
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.settings, // Icon for account settings
+              Icons.settings,
               color: Colors.white,
               size: 24,
             ),
-            const SizedBox(width: 8), // Spacing between icon and text
+            const SizedBox(width: 8),
             Text(
-              'Account Settings',
+              'Account',
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
@@ -35,15 +36,15 @@ class AccountScreen extends StatelessWidget {
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.deepPurpleAccent, Colors.indigoAccent], // Gradient background
+              colors: [Colors.deepPurpleAccent, Colors.indigoAccent],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
           ),
         ),
-        centerTitle: true, // Ensures the title is centered
-        elevation: 4, // Adds slight shadow for depth
-        toolbarHeight: 70, // Increases height for better visual balance
+        centerTitle: true,
+        elevation: 4,
+        toolbarHeight: 70,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -58,7 +59,16 @@ class AccountScreen extends StatelessWidget {
                     icon: Icons.settings,
                     title: 'Preferences',
                     onTap: () {
-                      // Navigate to Preferences (implement if needed)
+                      if(service.user.profile != null){
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RadarChartWidget(personalityData: service.user.profile!.character),
+                          ),
+                        );
+                      }else{
+                        //TODO error
+                      }
                     },
                   ),
                   _buildSettingsCard(
@@ -137,7 +147,6 @@ class AccountScreen extends StatelessWidget {
       ServiceResponse response = await service.logout();
 
       if (response.error == ServiceErrors.ok) {
-        // Navigate to WelcomeScreen on successful logout
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -145,7 +154,6 @@ class AccountScreen extends StatelessWidget {
           ),
         );
       } else {
-        // Handle different service error cases
         String errorMessage;
         switch (response.error) {
           case ServiceErrors.networkError:
@@ -164,7 +172,6 @@ class AccountScreen extends StatelessWidget {
         _showErrorDialog(context, errorMessage);
       }
     } catch (e) {
-      // Handle unexpected errors
       _showErrorDialog(context, 'An unexpected error occurred. Please try again.');
     }
   }
