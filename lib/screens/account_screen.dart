@@ -7,36 +7,61 @@ import '../service/service.dart';
 import 'chart_screen.dart';
 import 'my_hobbies_screen.dart';
 
-class AccountScreen extends StatelessWidget {
+class AccountScreen extends StatefulWidget {
   final Service service;
+  final bool isDarkMode;
+  final double fontSize;
+  final String fontFamily;
+  final ValueChanged<bool> onThemeChanged;
+  final ValueChanged<double> onFontSizeChanged;
+  final ValueChanged<String> onFontFamilyChanged;
 
-  const AccountScreen({super.key, required this.service});
+  const AccountScreen({
+    super.key,
+    required this.service,
+    required this.isDarkMode,
+    required this.fontSize,
+    required this.fontFamily,
+    required this.onThemeChanged,
+    required this.onFontSizeChanged,
+    required this.onFontFamilyChanged,
+  });
 
   @override
+  _AccountScreenState createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
+  @override
   Widget build(BuildContext context) {
+    // Apply font size and font family
+    final TextStyle textStyle = TextStyle(
+      fontSize: widget.fontSize,
+      fontFamily: widget.fontFamily,
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.psychology,
+            const Icon(
+              Icons.account_circle,
               color: Colors.white,
               size: 24,
             ),
             const SizedBox(width: 8),
             Text(
               'Account',
-              style: TextStyle(
+              style: textStyle.copyWith(
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
                 color: Colors.white,
               ),
             ),
           ],
         ),
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [Colors.teal, Colors.greenAccent],
               begin: Alignment.topLeft,
@@ -56,15 +81,24 @@ class AccountScreen extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
-                  _buildProfileDropdown(context),
+                  _buildProfileDropdown(context, textStyle),
                   _buildSettingsCard(
                     icon: Icons.settings,
                     title: 'Settings',
+                    textStyle: textStyle,
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => SettingsScreen()),
+                          builder: (context) => SettingsScreen(
+                            isDarkMode: widget.isDarkMode,
+                            fontSize: widget.fontSize,
+                            fontFamily: widget.fontFamily,
+                            onThemeChanged: widget.onThemeChanged,
+                            onFontSizeChanged: widget.onFontSizeChanged,
+                            onFontFamilyChanged: widget.onFontFamilyChanged,
+                          ),
+                        ),
                       );
                     },
                   ),
@@ -72,6 +106,7 @@ class AccountScreen extends StatelessWidget {
                     icon: Icons.logout,
                     title: 'Logout',
                     iconColor: Colors.redAccent,
+                    textStyle: textStyle,
                     onTap: () => _logout(context),
                   ),
                 ],
@@ -83,7 +118,7 @@ class AccountScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileDropdown(BuildContext context) {
+  Widget _buildProfileDropdown(BuildContext context, TextStyle textStyle) {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -91,31 +126,31 @@ class AccountScreen extends StatelessWidget {
       ),
       child: ExpansionTile(
         leading: const Icon(Icons.person, color: Colors.blueAccent),
-        title: const Text(
+        title: Text(
           'My Profile',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+          style: textStyle.copyWith(fontWeight: FontWeight.w500),
         ),
         children: [
           ListTile(
-            title: const Text('Hobbies'),
+            title: Text('Hobbies', style: textStyle),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MyHobbiesScreen(service: service),
+                  builder: (context) => MyHobbiesScreen(service: widget.service),
                 ),
               );
             },
           ),
           ListTile(
-            title: const Text('Chart'),
+            title: Text('Chart', style: textStyle),
             onTap: () {
-              if (service.user.profile != null) {
+              if (widget.service.user.profile != null) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => RadarChartWidget(
-                      personalityData: service.user.profile!.character,
+                      personalityData: widget.service.user.profile!.character,
                     ),
                   ),
                 );
@@ -133,6 +168,7 @@ class AccountScreen extends StatelessWidget {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
+    required TextStyle textStyle,
     Color? iconColor,
   }) {
     return Card(
@@ -147,7 +183,7 @@ class AccountScreen extends StatelessWidget {
         ),
         title: Text(
           title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+          style: textStyle.copyWith(fontWeight: FontWeight.w500),
         ),
         onTap: onTap,
       ),
@@ -156,12 +192,12 @@ class AccountScreen extends StatelessWidget {
 
   void _logout(BuildContext context) async {
     try {
-      ServiceResponse response = await service.logout();
+      ServiceResponse response = await widget.service.logout();
       if (response.error == ServiceErrors.ok) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => WelcomeScreen(service: service),
+            builder: (context) => WelcomeScreen(service: widget.service),
           ),
         );
       } else {
@@ -197,6 +233,3 @@ class AccountScreen extends StatelessWidget {
     );
   }
 }
-
-
-
