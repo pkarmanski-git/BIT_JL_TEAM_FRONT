@@ -61,7 +61,7 @@ class AccountScreen extends StatelessWidget {
                     icon: Icons.settings,
                     title: 'Settings',
                     onTap: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => SettingsScreen()),

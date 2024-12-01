@@ -19,7 +19,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _loadSettings();
   }
 
-  // Load saved settings from SharedPreferences
   void _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -78,13 +77,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   .toList(),
               onChanged: (newSize) {
                 if (newSize != null) {
-                  _updateFontSize(newSize); // Always pass a valid fontSize
+                  _updateFontSize(newSize);
                 }
               },
             ),
           ),
           const Divider(),
-          // Font Family Setting
           ListTile(
             leading: const Icon(Icons.font_download),
             title: const Text('Font Family'),
@@ -105,7 +103,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const Divider(),
-          // Theme Toggle
           ListTile(
             leading: const Icon(Icons.brightness_6),
             title: const Text('Dark Mode'),
