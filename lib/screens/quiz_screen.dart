@@ -1,16 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:jl_team_front_bit/model/service_response.dart';
 import 'package:jl_team_front_bit/screens/explore_hobbies_screen.dart';
 import 'package:swipe_cards/swipe_cards.dart';
-import 'dart:convert';
-import 'dart:math'; // Added for math functions
 
 import '../enums/service_errors.dart';
 import '../factories/image_factory.dart';
 import '../factories/question_factory.dart';
 import '../model/answer.dart';
 import '../model/question.dart';
-import '/screens/chart_screen.dart';
 import '../service/service.dart';
 
 class QuizScreen extends StatefulWidget {
@@ -109,17 +108,14 @@ class _QuizScreenState extends State<QuizScreen> {
 
   void _onQuizComplete() async {
     setState(() {
-      isLoading = true; // Show loader
+      isLoading = true;
     });
 
     try {
-      // Simulate a delay to display the loader (e.g., 3 seconds)
       await Future.delayed(Duration(seconds: 3));
 
-      // Upload the quiz answers
       ServiceResponse response = await widget.service.uploadQuiz(answers);
       if (response.error == ServiceErrors.ok) {
-        // Navigate to the chart screen after the loader
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

@@ -20,11 +20,12 @@ class _RadarChartWidgetState extends State<RadarChartWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> features = widget.personalityData.keys.toList();
-    final List<double> values = widget.personalityData.values
+    List<String> features = widget.personalityData.keys.toList();
+    List<double> values = widget.personalityData.values
         .map((e) => (e as num).toDouble())
         .toList();
-
+    features = features.take(6).toList();
+    values = values.take(6).toList();
     return Scaffold(
       appBar:  AppBar(
         title: Row(

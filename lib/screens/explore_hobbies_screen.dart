@@ -282,6 +282,14 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
       onStackFinished: _showCompletionDialog,
       upSwipeAllowed: false,
       fillSpace: true,
+      // onSwipeLeft: (index, _) {
+      //   // Obsługuje akcję dla wysunięcia karty w lewo
+      //   print('Karta $index została przesunięta w lewo');
+      // },
+      // onSwipeRight: (index, _) {
+      //   // Obsługuje akcję dla wysunięcia karty w prawo
+      //   print('Karta $index została przesunięta w prawo');
+      // },
     );
   }
 
