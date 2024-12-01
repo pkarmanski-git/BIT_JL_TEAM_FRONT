@@ -214,28 +214,17 @@ class _QuizScreenState extends State<QuizScreen> {
                         children: [
                           Expanded(
                             child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [Colors.red.withOpacity(0.3), Colors.transparent],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                ),
-                              ),
+                              color: Colors.red.withOpacity(0), // Red background with slight opacity
                             ),
                           ),
                           Expanded(
                             child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [Colors.transparent, Colors.green.withOpacity(0.3)],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                ),
-                              ),
+                              color: Colors.green.withOpacity(0), // Green background with slight opacity
                             ),
                           ),
                         ],
                       ),
+
                       SwipeCards(
                         matchEngine: _matchEngine,
                         itemBuilder: (BuildContext context, int index) {

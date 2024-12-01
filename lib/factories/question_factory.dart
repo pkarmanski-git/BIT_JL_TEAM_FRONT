@@ -15,7 +15,7 @@ class QuestionFactory {
         imagePath: 'assets/images/reading.jpg',
         isImageQuestion: true,
       ),
-      Question(text: 'Is it easy for you to empathize with others?'),
+      Question(text: 'Do you enjoy being in large social gatherings?'),
       Question(
         text: 'Does this image suit you?',
         imagePath: 'assets/images/volunteer.jpeg',
@@ -39,13 +39,13 @@ class QuestionFactory {
         imagePath: 'assets/images/compass.jpg',
         isImageQuestion: true,
       ),
-      Question(text: 'Do you prefer working in a structured environment?'),
+      Question(text: 'Do you often seek new experiences?'),
       Question(
         text: 'Does this image suit you?',
         imagePath: 'assets/images/office.jpg',
         isImageQuestion: true,
       ),
-      Question(text: 'Do you often contemplate the deeper meaning of life?'),
+      Question(text: 'Do you enjoy helping others solve their problems?'),
       Question(
         text: 'Does this image suit you?',
         imagePath: 'assets/images/stargazing.jpg',
@@ -53,7 +53,7 @@ class QuestionFactory {
       ),
       Question(text: 'Are you comfortable adapting to new situations?'),
       Question(text: 'Do you enjoy exploring new places?'),
-      Question(text: 'Do you find it easy to express your feelings?'),
+      Question(text: 'Do you often think about the future more than the present?'),
       Question(
         text: 'Does this image suit you?',
         imagePath: 'assets/images/artist.jpg',
@@ -61,17 +61,17 @@ class QuestionFactory {
       ),
       Question(text: 'Do you prefer to work alone rather than in a team?'),
       Question(
-        text: 'Does this image suit you?',
+        text: 'Are you easily stressed?',
         imagePath: 'assets/images/teamwork.jpg',
         isImageQuestion: true,
       ),
-      Question(text: 'Are you detail-oriented?'),
+      Question(text: 'Do you prefer logic over feelings?'),
       Question(
         text: 'Does this image suit you?',
         imagePath: 'assets/images/puzzle.jpg',
         isImageQuestion: true,
       ),
-      Question(text: 'Do you enjoy taking the lead in group activities?'),
+      Question(text: 'Are you a good listener?'),
       Question(
         text: 'Does this image suit you?',
         imagePath: 'assets/images/leader.jpg',

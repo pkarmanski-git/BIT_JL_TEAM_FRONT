@@ -91,14 +91,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/background.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
             child: Container(
