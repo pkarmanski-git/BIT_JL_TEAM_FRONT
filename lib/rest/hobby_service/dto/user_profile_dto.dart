@@ -8,9 +8,9 @@ class UserProfileDTO {
 
   factory UserProfileDTO.fromJson(Map<String, dynamic> json) {
     return UserProfileDTO(
-        username: json['username'],
-        age: json['age'],
-        location: json['location'],
+        username: json['username'] ?? "" ,
+        age: json['age'] ?? 0,
+        location: json['location'] ?? "",
         character: Map<String, int>.from(json['character'])
     );
   }

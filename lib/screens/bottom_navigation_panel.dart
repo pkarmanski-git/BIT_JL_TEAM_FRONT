@@ -28,7 +28,7 @@ class BottomNavigationBarComponent extends StatelessWidget {
         ),
       ],
       currentIndex: selectedIndex,
-      selectedItemColor: Colors.blue.shade600,
+      selectedItemColor: selectedIndex == 0 ? Colors.teal : Colors.greenAccent, // Kolor zmienia się zależnie od indexu
       unselectedItemColor: Colors.blueGrey.shade400,
       backgroundColor: Colors.white,
       onTap: onItemTapped,

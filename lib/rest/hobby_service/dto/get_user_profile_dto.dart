@@ -7,7 +7,7 @@ class GetUserProfileDTO{
 
   factory GetUserProfileDTO.fromJson(Map<String, dynamic> json) {
     return GetUserProfileDTO(
-        results: UserProfileDTO.fromJson(json["results"])
+        results: UserProfileDTO.fromJson(json)
     );
   }
 }

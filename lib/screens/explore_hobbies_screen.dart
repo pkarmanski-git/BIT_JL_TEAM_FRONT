@@ -32,19 +32,17 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
   late AnimationController _animationController;
   late Animation<Offset> _offsetAnimation;
   late Animation<double> _heightAnimation;
-  bool _isDetailsVisible = false; // Track visibility of the details
+  bool _isDetailsVisible = false;
 
   @override
   void initState() {
     super.initState();
     _loadHobbies();
-
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
 
-    // Animation for sliding up the content
     _offsetAnimation = Tween<Offset>(
       begin: Offset(0, 0), // initial position (no movement)
       end: Offset(0, -0.3), // end position (move up)
@@ -53,10 +51,9 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
       curve: Curves.easeInOut,
     ));
 
-    // Animation for expanding the hidden area (height)
     _heightAnimation = Tween<double>(
       begin: 0.0, // Start with 0 height (hidden)
-      end: 150.0, // Expand to desired height
+      end: 300.0, // Expand to desired height
     ).animate(CurvedAnimation(
       parent: _animationController,
       curve: Curves.easeInOut,
@@ -167,14 +164,18 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
                 color: Colors.grey[200],
                 padding: const EdgeInsets.all(16.0),
                 child: currentHobby != null && currentHobby!.summary.isNotEmpty
-                    ? Text(
-                  currentHobby!.summary,
-                  style: TextStyle(fontSize: 18),
+                    ? SingleChildScrollView(
+                  child: Text(
+                    currentHobby!.summary,
+                    style: TextStyle(fontSize: 18),
+                    textAlign: TextAlign.justify,
+                  ),
                 )
                     : const SizedBox.shrink(),
               );
             },
           )
+
         ],
       ),
     );
@@ -188,30 +189,22 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
     return SwipeCards(
       matchEngine: _matchEngine!,
       itemBuilder: (context, index) {
-        final hobby = hobbies[index];
-        // Zmienna `hobby` zawiera dane obiektu, który jest aktualnie wyświetlany.
-
-        return GestureDetector(
-          onTap: () {
-            // Możesz np. przypisać dane do zmiennej, żeby później użyć
-            setState(() {
-              currentHobby = hobby;
-            });
-          },
-          child: Card(
+        currentHobby = hobbies[index];
+        return Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
             child: Column(
               children: [
                 Expanded(
-                  child: hobby.image != null && hobby.image!.isNotEmpty
+                  child: currentHobby?.image != null && currentHobby!.image!.isNotEmpty
                       ? Image.memory(
-                    base64Decode(hobby.image!),
+                    base64Decode(currentHobby!.image!),
                     fit: BoxFit.cover,
                     width: double.infinity,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
+                        width: double.infinity,
                         color: Colors.grey,
                         child: const Icon(
                           Icons.image,
@@ -222,6 +215,7 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
                     },
                   )
                       : Container(
+                    width: double.infinity,
                     color: Colors.grey,
                     child: const Icon(
                       Icons.image,
@@ -233,7 +227,7 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    hobby.name, // Tekst wyciągnięty z obiektu hobby
+                    currentHobby!.name,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -260,14 +254,11 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
                 ),
               ],
             ),
-          ),
         );
       },
       onStackFinished: _showCompletionDialog,
       upSwipeAllowed: false,
       fillSpace: true,
-      likeTag: const Icon(Icons.favorite, color: Colors.green, size: 100),
-      nopeTag: const Icon(Icons.close, color: Colors.red, size: 100),
     );
   }
 
