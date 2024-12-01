@@ -1,12 +1,14 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jl_team_front_bit/model/user.dart';
 import 'package:jl_team_front_bit/model/community.dart';
+import 'package:jl_team_front_bit/rest/hobby_service/dto/profile_me_dto.dart';
 import 'package:logger/logger.dart';
 
 import '../enums/service_errors.dart';
 import '../model/answer.dart';
 import '../model/hobby.dart';
 import '../model/profile.dart';
+import '../model/profile_me.dart';
 import '../model/service_response.dart';
 import '../model/token.dart';
 import '../rest/hobby_service/dto/get_hobbies_dto.dart';
@@ -122,6 +124,16 @@ class Service {
     }
   }
 
+  Future<ServiceResponse> profileUser(ProfileMe data) async{
+    try {
+      ProfileMeDTO profileMeDTO = ProfileMeDTO(data.username, data.age, data.location);
+      Object response = await restRepository.profileUser(user, profileMeDTO);
+      return ServiceResponse(data: null, error: ServiceErrors.ok);
+    } catch (e) {
+      logger.e(e.toString());
+      return ServiceResponse(data: null, error: ServiceErrors.genericError);
+    }
+  }
 }
 
 

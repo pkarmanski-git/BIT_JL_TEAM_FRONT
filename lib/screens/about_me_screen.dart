@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../model/profile_me.dart';
 import 'quiz_screen.dart';
 import '../constants/colors.dart';
 import '../service/service.dart';
@@ -23,7 +24,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
 
   void _validateAndContinue() {
     setState(() {
-      _errorMessage = null; // Reset error message
+      _errorMessage = null;
     });
 
     if (_nicknameController.text.isEmpty) {
@@ -50,8 +51,13 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
       });
       return;
     }
+    ProfileMe profileMe = ProfileMe(
+        _nicknameController.text,
+        int.tryParse(_ageController.text) ?? 0,
+        _selectedLocation ?? ""
+    );
+    widget.service.profileUser(profileMe);
 
-    // Navigate to the next screen if validation passes
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -121,7 +127,7 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
                 },
               ),
               const SizedBox(height: 20),
-              if (_errorMessage != null) // Display error message if any
+              if (_errorMessage != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                   child: Text(

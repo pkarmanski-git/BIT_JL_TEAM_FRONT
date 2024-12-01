@@ -9,6 +9,7 @@ import '../utils/config.dart';
 import 'hobby_service/dto/get_hobbies_dto.dart';
 import 'hobby_service/dto/login_dto.dart';
 import 'hobby_service/dto/profile_dto.dart';
+import 'hobby_service/dto/profile_me_dto.dart';
 import 'hobby_service/dto/register_dto.dart';
 import 'hobby_service/dto/token_dto.dart';
 import 'hobby_service/dto/token_refresh_dto.dart';
@@ -67,5 +68,10 @@ class RestRepository {
     } else {
       throw Exception('Failed to fetch communities');
     }
+  }
+
+  Future<Object> profileUser(User user, ProfileMeDTO data) async{
+    Object response = await service.profileUser(user, data);
+    return response;
   }
 }
