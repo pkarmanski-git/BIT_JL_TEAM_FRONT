@@ -31,15 +31,10 @@ class _MyHobbiesScreenState extends State<MyHobbiesScreen> {
       isLoading = true;
     });
     try {
-      // Fetch the user's hobbies from the backend
-      ServiceResponse response = await widget.service.getUserHobby();
-      if (response.error == ServiceErrors.ok) {
-        setState(() {
-          hobbies = response.data!;
-        });
-      } else {
-        _showErrorSnackbar("Failed to load hobbies: ${response.error}");
-      }
+      // ServiceResponse response = await widget.service.getUserHobby();
+      setState(() {
+        hobbies = widget.service.user.hobbies??[];
+      });
     } catch (e) {
       _showErrorSnackbar("An error occurred while loading hobbies: $e");
     } finally {

@@ -26,8 +26,11 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     ServiceResponse response = await widget.service.login(emailController.text, passwordController.text);
-    widget.service.getUserProfile();
-    await widget.service.getUserHobby();
+
+    await Future.wait([
+      widget.service.getUserProfile(),
+      widget.service.getUserHobby(),
+    ]);
 
     setState(() {
       isLoading = false;
@@ -89,7 +92,6 @@ class _LoginScreenState extends State<LoginScreen> {
               color: Colors.white54.withOpacity(0.1),
             ),
           ),
-          // Main content
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40.0),

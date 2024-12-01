@@ -40,8 +40,10 @@ class Service {
     String? refreshToken = await storage.read(key: 'refreshToken');
     if(refreshToken != null && refreshToken != "") {
       await this.refreshToken(refreshToken);
-      await this.getUserProfile();
-      await this.getUserHobby();
+      await Future.wait([
+        getUserProfile(),
+        getUserHobby(),
+      ]);
     }
   }
 

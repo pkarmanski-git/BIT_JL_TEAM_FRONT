@@ -79,9 +79,6 @@ class HobbyService{
         },
       ).timeout(duration);
       logger.i(response.body);
-      if(response.statusCode != 200 && response.statusCode != 201){
-        throw Exception('Error in POST request: $response');
-      }
       return Object();
     } catch (e) {
       throw Exception('Error in POST request: $e');

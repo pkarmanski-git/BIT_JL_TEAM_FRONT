@@ -28,32 +28,26 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
   void initState() {
     super.initState();
 
-    // Inicjalizacja kontrolera animacji dla efektu fade-in przycisków
     _fadeAnimationController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
     );
 
-    // Definicja animacji fade-in
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _fadeAnimationController, curve: Curves.easeIn),
     );
 
-    // Inicjalizacja kontrolera animacji dla logo
     _logoAnimationController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
     );
 
-    // Definicja animacji skalowania logo
     _logoAnimation = Tween<double>(begin: 3.0, end: 1.0).animate(
       CurvedAnimation(parent: _logoAnimationController, curve: Curves.easeOut),
     );
 
-    // Uruchomienie animacji logo
     _logoAnimationController.forward();
 
-    // Uruchomienie animacji fade-in po opóźnieniu
     Future.delayed(const Duration(seconds: 2), () {
       _fadeAnimationController.forward();
     });
@@ -71,19 +65,16 @@ class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateM
     return Scaffold(
       body: Stack(
         children: [
-          // Efekt rozmycia tła
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
             child: Container(
               color: Colors.white54.withOpacity(0.1),
             ),
           ),
-          // Główna zawartość
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                // Logo z animacją skalowania
                 Hero(
                   tag: 'logo',
                   child: ScaleTransition(
