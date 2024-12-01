@@ -26,7 +26,7 @@ class _QuizScreenState extends State<QuizScreen> {
   late MatchEngine _matchEngine;
   List<Answer> answers = [];
 
-  final String defaultBackgroundImage = 'assets/images/default_background.png';
+  final String defaultBackgroundImage = 'assets/images/logo.png';
 
   List<Question> questions = QuestionFactory.createQuestions();
 
@@ -326,6 +326,8 @@ class _QuizScreenState extends State<QuizScreen> {
                         },
                         upSwipeAllowed: false,
                         fillSpace: true,
+                        likeTag: Icon(Icons.thumb_up, color: Colors.green, size: 100,),
+                        nopeTag: Icon(Icons.thumb_down, color: Colors.red,  size: 100,),
                       ),
                     ],
                   )

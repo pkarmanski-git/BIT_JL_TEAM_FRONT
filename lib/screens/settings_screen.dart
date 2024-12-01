@@ -1,59 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({super.key});
+  final bool isDarkMode;
+  final double fontSize;
+  final String fontFamily;
+  final ValueChanged<bool> onThemeChanged;
+  final ValueChanged<double> onFontSizeChanged;
+  final ValueChanged<String> onFontFamilyChanged;
+
+  const SettingsScreen({
+    super.key,
+    required this.isDarkMode,
+    required this.fontSize,
+    required this.fontFamily,
+    required this.onThemeChanged,
+    required this.onFontSizeChanged,
+    required this.onFontFamilyChanged,
+  });
 
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool isDarkMode = false;
-  double fontSize = 16.0;
-  String fontFamily = 'Roboto';
+  late bool isDarkMode;
+  late double fontSize;
+  late String fontFamily;
 
   @override
   void initState() {
     super.initState();
-    _loadSettings();
+    isDarkMode = widget.isDarkMode;
+    fontSize = widget.fontSize;
+    fontFamily = widget.fontFamily;
   }
 
-  void _loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      isDarkMode = prefs.getBool('isDarkMode') ?? false;
-      fontSize = prefs.getDouble('fontSize') ?? 16.0;
-      fontFamily = prefs.getString('fontFamily') ?? 'Roboto';
-    });
-  }
-
-  void _updateTheme(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isDarkMode', value);
+  void _updateTheme(bool value) {
     setState(() {
       isDarkMode = value;
     });
+    widget.onThemeChanged(value);
   }
 
-  void _updateFontSize(double value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setDouble('fontSize', value);
+  void _updateFontSize(double value) {
     setState(() {
       fontSize = value;
     });
+    widget.onFontSizeChanged(value);
   }
 
-  void _updateFontFamily(String value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('fontFamily', value);
+  void _updateFontFamily(String value) {
     setState(() {
       fontFamily = value;
     });
+    widget.onFontFamilyChanged(value);
   }
 
   @override
   Widget build(BuildContext context) {
+    // Apply font size and font family
+    final TextStyle textStyle = TextStyle(
+      fontSize: fontSize,
+      fontFamily: fontFamily,
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -65,14 +75,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // Font Size Setting
           ListTile(
             leading: const Icon(Icons.text_fields),
-            title: const Text('Font Size'),
-            subtitle: Text('Current size: ${fontSize.toStringAsFixed(0)}'),
+            title: Text('Font Size', style: textStyle),
+            subtitle: Text('Current size: ${fontSize.toStringAsFixed(0)}', style: textStyle),
             trailing: DropdownButton<double>(
-              value: fontSize, // Ensure this is never null
+              value: fontSize,
               items: [12.0, 14.0, 16.0, 18.0, 20.0, 24.0]
                   .map((size) => DropdownMenuItem(
                 value: size,
-                child: Text('${size.toInt()}'),
+                child: Text('${size.toInt()}', style: textStyle),
               ))
                   .toList(),
               onChanged: (newSize) {
@@ -83,16 +93,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const Divider(),
+          // Font Family Setting
           ListTile(
             leading: const Icon(Icons.font_download),
-            title: const Text('Font Family'),
-            subtitle: Text('Current font: $fontFamily'),
+            title: Text('Font Family', style: textStyle),
+            subtitle: Text('Current font: $fontFamily', style: textStyle),
             trailing: DropdownButton<String>(
               value: fontFamily,
               items: ['Roboto', 'OpenSans', 'Lato', 'Merriweather']
                   .map((font) => DropdownMenuItem(
                 value: font,
-                child: Text(font),
+                child: Text(font, style: textStyle),
               ))
                   .toList(),
               onChanged: (newFont) {
@@ -103,10 +114,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           const Divider(),
+          // Dark Mode Setting
           ListTile(
             leading: const Icon(Icons.brightness_6),
-            title: const Text('Dark Mode'),
-            subtitle: Text(isDarkMode ? 'Enabled' : 'Disabled'),
+            title: Text('Dark Mode', style: textStyle),
+            subtitle: Text(isDarkMode ? 'Enabled' : 'Disabled', style: textStyle),
             trailing: Switch(
               value: isDarkMode,
               onChanged: _updateTheme,

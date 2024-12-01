@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:swipe_cards/swipe_cards.dart';
 import '../constants/colors.dart';
 import '../enums/service_errors.dart';
@@ -27,6 +28,8 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
   List<Uint8List?> decodedImages = [];
   MatchEngine? _matchEngine;
   bool isLoading = false;
+  final String defaultBackgroundImage = 'assets/images/logo.png';
+
 
   late AnimationController _animationController;
   late Animation<double> _heightAnimation;

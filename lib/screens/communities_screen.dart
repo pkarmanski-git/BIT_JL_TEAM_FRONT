@@ -19,7 +19,7 @@ class _CommunitiesScreenState extends State<CommunitiesScreen> {
   @override
   void initState() {
     super.initState();
-    _communitiesFuture = widget.service.fetchCommunitiesWithPosts();
+    _communitiesFuture = [] as Future<ServiceResponse<List<Community>>>;
   }
 
   @override

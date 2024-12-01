@@ -100,16 +100,6 @@ class Service {
     }
   }
 
-  Future<ServiceResponse<List<Community>>> fetchCommunitiesWithPosts() async {
-    try {
-      final communities = await restRepository.fetchCommunitiesWithPosts(); // Updated method in RestRepository
-      return ServiceResponse(data: communities, error: ServiceErrors.ok);
-    } catch (e) {
-      logger.e(e.toString());
-      return ServiceResponse(data: null, error: ServiceErrors.genericError);
-    }
-  }
-
   Future<ServiceResponse<ProfileDTO>> uploadQuiz(List<Answer> answers) async {
     try {
       var data = UploadQuizDTO(answers);

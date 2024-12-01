@@ -19,14 +19,14 @@ class BottomNavigationBarComponent extends StatelessWidget {
           label: 'Account',
         ),
         const BottomNavigationBarItem(
-          icon: Icon(Icons.explore, size: 28), // Większa ikona
+          icon: Icon(Icons.explore, size: 28),
           label: 'Explore Hobbies',
         ),
         BottomNavigationBarItem(
           icon: Stack(
-            clipBehavior: Clip.none, // Pozwala wyświetlić widget poza limitem
+            clipBehavior: Clip.none,
             children: [
-              Icon(Icons.people, size: 28), // Większa ikona
+              Icon(Icons.people, size: 28),
               Positioned(
                 top: -15, // Większe przesunięcie w górę
                 right: -25, // Większe przesunięcie w prawo
