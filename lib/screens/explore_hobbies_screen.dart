@@ -28,7 +28,7 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
   List<Uint8List?> decodedImages = [];
   MatchEngine? _matchEngine;
   bool isLoading = false;
-  final String defaultBackgroundImage = 'assets/images/logo.png';
+  final String defaultBackgroundImage = 'assets/images/default_background.png';
 
 
   late AnimationController _animationController;
