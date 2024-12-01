@@ -12,9 +12,9 @@ class IntroScreen extends StatefulWidget {
   _IntroScreenState createState() => _IntroScreenState();
 }
 
-class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStateMixin {
+class _IntroScreenState extends State<IntroScreen> with TickerProviderStateMixin {
   String fullText =
-      "Let's Discover Your Personality!\nGet ready to answer some fun questions.";
+      "Let's Discover Your Personality!\nGet ready to answer some questions.";
   String displayedText = "";
   int currentIndex = 0;
   bool reverseTyping = false; // To control reverse text animation
@@ -33,12 +33,12 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
 
   void _setupBackgroundAnimation() {
     _colorController = AnimationController(
-      duration: const Duration(seconds: 2), // Duration for smooth color change
+      duration: const Duration(milliseconds: 500), // Faster duration for color changes
       vsync: this,
     );
     _backgroundColor = ColorTween(
       begin: Colors.teal.shade50,
-      end: Colors.green.shade200, // Initial green for "AGREE"
+      end: Colors.green.shade300,
     ).animate(_colorController);
   }
 
@@ -56,36 +56,58 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
           });
         });
       } else if (reverseTyping && displayedText.isNotEmpty) {
-        // Reverse typing happens faster
-        Timer(const Duration(milliseconds: 20), () {
+        // Reverse typing happens faster (2x speed)
+        Timer(const Duration(milliseconds: 25), () {
           setState(() {
             displayedText = displayedText.substring(0, displayedText.length - 1);
           });
         });
       } else if (reverseTyping && displayedText.isEmpty) {
         timer.cancel();
-        _showGifs();
+        Future.delayed(const Duration(milliseconds: 500), () {
+          _showGifs();
+        });
       }
     });
   }
+
+  void _animateBackground({required bool toGreen}) {
+    // Reset the animation controller to ensure it starts from the beginning
+    _colorController.reset();
+
+    // Set the appropriate color tween based on the flag
+    ColorTween colorTween = toGreen
+        ? ColorTween(
+      begin: Colors.teal.shade50,
+      end: Colors.green.shade300,
+    )
+        : ColorTween(
+      begin: Colors.white,
+      end: Colors.red.shade300,
+    );
+
+    _backgroundColor = colorTween.animate(_colorController);
+
+    // Play the animation once
+    _colorController.duration = const Duration(seconds: 3); // Adjust transition speed
+    _colorController.forward();
+  }
+
+
 
   void _showGifs() {
     // Show "AGREE" gif
     setState(() {
       showAgreeGif = true;
     });
-    _colorController.forward(); // Smoothly change to green
-    Future.delayed(const Duration(seconds: 3), () {
+    _animateBackground(toGreen: true); // Animate to green once
+    Future.delayed(const Duration(seconds: 4), () {
       setState(() {
         showAgreeGif = false;
         showDisagreeGif = true;
-        _colorController.reverse(); // Smoothly change to red
-        _backgroundColor = ColorTween(
-          begin: Colors.red.shade200, // Start with lighter red
-          end: Colors.red.shade800, // Transition to darker red
-        ).animate(_colorController);
       });
-      Future.delayed(const Duration(seconds: 3), () {
+      _animateBackground(toGreen: false); // Animate to red once
+      Future.delayed(const Duration(seconds: 4), () {
         // Navigate to QuizScreen
         Navigator.pushReplacement(
           context,
@@ -96,6 +118,9 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
       });
     });
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {

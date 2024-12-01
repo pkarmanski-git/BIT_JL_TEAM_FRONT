@@ -59,7 +59,6 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
     );
     widget.service.profileUser(profileMe);
 
-    // Navigate to the next screen if validation passes
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -73,8 +72,37 @@ class _AboutMeScreenState extends State<AboutMeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('About Me'),
-        backgroundColor: AppColors.primaryColor,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.psychology,
+              color: Colors.white,
+              size: 24,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'About Me',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.teal, Colors.greenAccent],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        centerTitle: true,
+        elevation: 4,
+        toolbarHeight: 70,
       ),
       body: Center(
         child: SingleChildScrollView(
