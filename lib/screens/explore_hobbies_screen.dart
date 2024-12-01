@@ -32,13 +32,12 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
   late AnimationController _animationController;
   late Animation<Offset> _offsetAnimation;
   late Animation<double> _heightAnimation;
-  bool _isDetailsVisible = false; // Track visibility of the details
+  bool _isDetailsVisible = false;
 
   @override
   void initState() {
     super.initState();
     _loadHobbies();
-
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -165,14 +164,18 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
                 color: Colors.grey[200],
                 padding: const EdgeInsets.all(16.0),
                 child: currentHobby != null && currentHobby!.summary.isNotEmpty
-                    ? Text(
-                  currentHobby!.summary,
-                  style: TextStyle(fontSize: 18),
+                    ? SingleChildScrollView(
+                  child: Text(
+                    currentHobby!.summary,
+                    style: TextStyle(fontSize: 18),
+                    textAlign: TextAlign.justify,
+                  ),
                 )
                     : const SizedBox.shrink(),
               );
             },
           )
+
         ],
       ),
     );
@@ -187,7 +190,6 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
       matchEngine: _matchEngine!,
       itemBuilder: (context, index) {
         currentHobby = hobbies[index];
-
         return GestureDetector(
           child: Card(
             shape: RoundedRectangleBorder(
@@ -259,8 +261,6 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
       onStackFinished: _showCompletionDialog,
       upSwipeAllowed: false,
       fillSpace: true,
-      likeTag: const Icon(Icons.favorite, color: Colors.green, size: 100),
-      nopeTag: const Icon(Icons.close, color: Colors.red, size: 100),
     );
   }
 
