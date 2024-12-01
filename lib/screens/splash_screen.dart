@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       vsync: this,
     );
 
-    _animation = Tween<double>(begin: 6.0, end: 4.0).animate(
+    _animation = Tween<double>(begin: 6.0, end:2).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 

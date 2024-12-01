@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:jl_team_front_bit/model/service_response.dart';
 import 'package:jl_team_front_bit/screens/swipe_screen.dart';
 import 'package:swipe_cards/swipe_cards.dart';
+import 'dart:convert';
 
 import '../enums/service_errors.dart';
 import '../factories/image_factory.dart';
 import '../factories/question_factory.dart';
 import '../model/answer.dart';
 import '../model/question.dart';
+import '/screens/chart_screen.dart';
 import '../service/service.dart';
 
 class QuizScreen extends StatefulWidget {
@@ -136,7 +138,37 @@ class _QuizScreenState extends State<QuizScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Personality Quiz'),
+        title: Row(
+          mainAxisSize: MainAxisSize.min, // Ensures the title is centered
+          children: [
+            Icon(
+              Icons.psychology, // Centered icon
+              color: Colors.white,
+              size: 24,
+            ),
+            const SizedBox(width: 8), // Spacing between icon and text
+            Text(
+              'Personality Quiz',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.teal, Colors.greenAccent], // Gradient background
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        centerTitle: true, // Ensures horizontal centering
+        elevation: 4,
+        toolbarHeight: 70, // Adjust height if needed
       ),
       body: Column(
         children: [
@@ -147,7 +179,7 @@ class _QuizScreenState extends State<QuizScreen> {
                 LinearProgressIndicator(
                   value: progress,
                   backgroundColor: Colors.grey[300],
-                  color: Colors.blueAccent,
+                  color: Colors.teal,
                   minHeight: 20,
                 ),
                 Positioned.fill(
@@ -224,8 +256,8 @@ class _QuizScreenState extends State<QuizScreen> {
                                 ),
                                 fit: BoxFit.cover,
                                 colorFilter: ColorFilter.mode(
-                                  Colors.black.withOpacity(0.4),
-                                  BlendMode.darken,
+                                  Colors.white.withOpacity(0.3), // Apply a light color (e.g., white)
+                                  BlendMode.lighten,             // Use BlendMode.lighten for a faded effect
                                 ),
                               ),
                             ),

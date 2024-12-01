@@ -13,23 +13,44 @@ class AccountScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Account Settings'),
-        backgroundColor: Colors.blueAccent,
+        title: Row(
+          mainAxisSize: MainAxisSize.min, // Center-aligns the title
+          children: [
+            Icon(
+              Icons.settings, // Icon for account settings
+              color: Colors.white,
+              size: 24,
+            ),
+            const SizedBox(width: 8), // Spacing between icon and text
+            Text(
+              'Account Settings',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.deepPurpleAccent, Colors.indigoAccent], // Gradient background
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        centerTitle: true, // Ensures the title is centered
+        elevation: 4, // Adds slight shadow for depth
+        toolbarHeight: 70, // Increases height for better visual balance
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Settings',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
+              Expanded(
               child: ListView(
                 children: [
                   _buildProfileDropdown(context),

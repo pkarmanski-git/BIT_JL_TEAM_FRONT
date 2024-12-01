@@ -44,7 +44,7 @@ class WelcomeScreen extends StatelessWidget {
                   tag: 'logo', // Matching tag for Hero animation
                   child: Image.asset(
                     'assets/logo.png', // Path to your logo
-                    height: 200, // Adjust the size as needed
+                    height: 350, // Adjust the size as needed
                   ),
                 ),
                 const SizedBox(height: 40),
