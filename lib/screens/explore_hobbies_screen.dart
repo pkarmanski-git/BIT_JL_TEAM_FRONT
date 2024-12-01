@@ -23,7 +23,6 @@ class SwipeScreen extends StatefulWidget {
 
 class _SwipeScreenState extends State<SwipeScreen> {
   List<Hobby> hobbies = [];
-  List<Hobby> likedHobbies = [];
   MatchEngine? _matchEngine;
   bool showDetails = false;
   Hobby? currentHobby;
@@ -49,9 +48,11 @@ class _SwipeScreenState extends State<SwipeScreen> {
               return SwipeItem(
                 content: hobby,
                 likeAction: () {
-                  likedHobbies.add(hobby);
+                  widget.service.updateUserHobby([hobby.id], []);
                 },
-                nopeAction: () {},
+                nopeAction: () {
+                  widget.service.updateUserHobby([], [hobby.id]);
+                },
               );
             }).toList(),
           );

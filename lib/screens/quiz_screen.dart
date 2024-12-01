@@ -112,7 +112,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
   void _onQuizComplete() async {
     setState(() {
-      isLoading = true; // Show loader
+      isLoading = true;
     });
 
     try {

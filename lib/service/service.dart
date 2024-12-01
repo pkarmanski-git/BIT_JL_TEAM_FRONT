@@ -1,7 +1,10 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jl_team_front_bit/model/user.dart';
 import 'package:jl_team_front_bit/model/community.dart';
+import 'package:jl_team_front_bit/rest/hobby_service/dto/get_user_profile_dto.dart';
 import 'package:jl_team_front_bit/rest/hobby_service/dto/profile_me_dto.dart';
+import 'package:jl_team_front_bit/rest/hobby_service/dto/update_hobby_profile_dto.dart';
+import 'package:jl_team_front_bit/rest/hobby_service/dto/user_profile_dto.dart';
 import 'package:logger/logger.dart';
 
 import '../enums/service_errors.dart';
@@ -36,6 +39,7 @@ class Service {
     String? refreshToken = await storage.read(key: 'refreshToken');
     if(refreshToken != null && refreshToken != "") {
       await this.refreshToken(refreshToken);
+      await this.getUserProfile();
     }
   }
 
@@ -106,7 +110,7 @@ class Service {
     try {
       var data = UploadQuizDTO(answers);
       ProfileDTO response = await restRepository.uploadQuiz(user, data);
-      user.profile = Profile(response);
+      user.profile = Profile.fromProfileDTO(response);
       return ServiceResponse(data: response, error: ServiceErrors.ok);
     } catch (e) {
       logger.e(e.toString());
@@ -134,6 +138,31 @@ class Service {
       return ServiceResponse(data: null, error: ServiceErrors.genericError);
     }
   }
+
+  Future<ServiceResponse> getUserProfile() async{
+    try {
+      GetUserProfileDTO response = await restRepository.getUserProfile(user);
+      user.profile = Profile(character: response.results.character);
+      return ServiceResponse(data: null, error: ServiceErrors.ok);
+    } catch (e) {
+      logger.e(e.toString());
+      return ServiceResponse(data: null, error: ServiceErrors.genericError);
+    }
+  }
+
+
+  Future<ServiceResponse> updateUserHobby(List<int> saveHobbies, List<int> deleteHobbies) async{
+    try {
+      var data = UpdateHobbyProfileDTO(saveHobbies, deleteHobbies);
+      await restRepository.updateUserHobbies(user, data);
+      return ServiceResponse(data: null, error: ServiceErrors.ok);
+    } catch (e) {
+      logger.e(e.toString());
+      return ServiceResponse(data: null, error: ServiceErrors.genericError);
+    }
+  }
+
+
 }
 
 
