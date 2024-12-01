@@ -26,7 +26,7 @@ class _QuizScreenState extends State<QuizScreen> {
   late MatchEngine _matchEngine;
   List<Answer> answers = [];
 
-  final String defaultBackgroundImage = 'assets/images/logo.png';
+  final String defaultBackgroundImage = 'assets/images/default_background.png';
 
   List<Question> questions = QuestionFactory.createQuestions();
 
