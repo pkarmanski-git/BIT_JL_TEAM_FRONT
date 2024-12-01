@@ -79,8 +79,8 @@ class RestRepository {
     return response;
   }
 
-  Future<GetUserProfileDTO> getUserProfile(User user) async{
-    GetUserProfileDTO response = await service.getUserProfile(user);
+  Future<UserProfileDTO> getUserProfile(User user) async{
+    UserProfileDTO response = await service.getUserProfile(user);
     return response;
   }
 

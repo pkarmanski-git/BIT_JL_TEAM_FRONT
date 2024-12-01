@@ -143,8 +143,8 @@ class Service {
 
   Future<ServiceResponse> getUserProfile() async{
     try {
-      GetUserProfileDTO response = await restRepository.getUserProfile(user);
-      user.profile = Profile(character: response.results.character);
+      UserProfileDTO response = await restRepository.getUserProfile(user);
+      user.profile = Profile(character: response.character);
       return ServiceResponse(data: null, error: ServiceErrors.ok);
     } catch (e) {
       logger.e(e.toString());

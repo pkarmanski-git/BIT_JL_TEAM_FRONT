@@ -15,6 +15,7 @@ import 'dto/profile_me_dto.dart';
 import 'dto/register_dto.dart';
 import 'dto/token_dto.dart';
 import 'dto/token_refresh_dto.dart';
+import 'dto/user_profile_dto.dart';
 
 class HobbyService{
   final String baseUrl;
@@ -168,7 +169,7 @@ class HobbyService{
     }
   }
 
-  Future<GetUserProfileDTO> getUserProfile(User user) async{
+  Future<UserProfileDTO> getUserProfile(User user) async{
     const endpoint = "/profile/me/";
     final url = Uri.parse('$baseUrl$endpoint');
     try {
@@ -185,7 +186,7 @@ class HobbyService{
       if(response.statusCode != 200 && response.statusCode != 201){
         throw Exception('Error in POST request: $response');
       }
-      return GetUserProfileDTO.fromJson(json.decode(response.body));
+      return UserProfileDTO.fromJson(json.decode(response.body));
     } catch (e) {
       throw Exception('Error in POST request: $e');
     }

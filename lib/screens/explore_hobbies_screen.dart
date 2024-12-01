@@ -44,7 +44,6 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
       duration: const Duration(milliseconds: 500),
     );
 
-    // Animation for sliding up the content
     _offsetAnimation = Tween<Offset>(
       begin: Offset(0, 0), // initial position (no movement)
       end: Offset(0, -0.3), // end position (move up)
@@ -53,7 +52,6 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
       curve: Curves.easeInOut,
     ));
 
-    // Animation for expanding the hidden area (height)
     _heightAnimation = Tween<double>(
       begin: 0.0, // Start with 0 height (hidden)
       end: 150.0, // Expand to desired height
@@ -188,16 +186,9 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
     return SwipeCards(
       matchEngine: _matchEngine!,
       itemBuilder: (context, index) {
-        final hobby = hobbies[index];
-        // Zmienna `hobby` zawiera dane obiektu, który jest aktualnie wyświetlany.
+        currentHobby = hobbies[index];
 
         return GestureDetector(
-          onTap: () {
-            // Możesz np. przypisać dane do zmiennej, żeby później użyć
-            setState(() {
-              currentHobby = hobby;
-            });
-          },
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
@@ -205,13 +196,14 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
             child: Column(
               children: [
                 Expanded(
-                  child: hobby.image != null && hobby.image!.isNotEmpty
+                  child: currentHobby?.image != null && currentHobby!.image!.isNotEmpty
                       ? Image.memory(
-                    base64Decode(hobby.image!),
+                    base64Decode(currentHobby!.image!),
                     fit: BoxFit.cover,
                     width: double.infinity,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
+                        width: double.infinity,
                         color: Colors.grey,
                         child: const Icon(
                           Icons.image,
@@ -222,6 +214,7 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
                     },
                   )
                       : Container(
+                    width: double.infinity,
                     color: Colors.grey,
                     child: const Icon(
                       Icons.image,
@@ -233,7 +226,7 @@ class _SwipeScreenState extends State<SwipeScreen> with TickerProviderStateMixin
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Text(
-                    hobby.name, // Tekst wyciągnięty z obiektu hobby
+                    currentHobby!.name,
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
