@@ -17,6 +17,8 @@ class MyHobbiesScreen extends StatefulWidget {
 class _MyHobbiesScreenState extends State<MyHobbiesScreen> {
   List<Hobby> hobbies = [];
   bool isLoading = false;
+  bool showDetails = false;
+  Hobby? currentHobby;
 
   @override
   void initState() {
@@ -55,6 +57,20 @@ class _MyHobbiesScreenState extends State<MyHobbiesScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
+  }
+
+  void _showHobbyDetails(Hobby hobby) {
+    setState(() {
+      showDetails = true;
+      currentHobby = hobby;
+    });
+  }
+
+  void _hideHobbyDetails() {
+    setState(() {
+      showDetails = false;
+      currentHobby = null;
+    });
   }
 
   @override
@@ -102,18 +118,27 @@ class _MyHobbiesScreenState extends State<MyHobbiesScreen> {
           style: TextStyle(fontSize: 18),
         ),
       )
-          : GridView.builder(
-        padding: const EdgeInsets.all(16),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 1, // One tile per row
-          childAspectRatio: 4 / 1, // 4:1 width-to-height ratio
-          mainAxisSpacing: 16,
-        ),
-        itemCount: hobbies.length,
-        itemBuilder: (context, index) {
-          final hobby = hobbies[index];
-          return _buildHobbyTile(hobby);
-        },
+          : Stack(
+        children: [
+          Visibility(
+            visible: !showDetails,
+            child: GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1, // One tile per row
+                childAspectRatio: 4 / 1, // 4:1 width-to-height ratio
+                mainAxisSpacing: 16,
+              ),
+              itemCount: hobbies.length,
+              itemBuilder: (context, index) {
+                final hobby = hobbies[index];
+                return _buildHobbyTile(hobby);
+              },
+            ),
+          ),
+          if (showDetails && currentHobby != null)
+            _buildDetailsView(),
+        ],
       ),
     );
   }
@@ -121,7 +146,7 @@ class _MyHobbiesScreenState extends State<MyHobbiesScreen> {
   Widget _buildHobbyTile(Hobby hobby) {
     return GestureDetector(
       onTap: () {
-        // Handle tap if needed
+        _showHobbyDetails(hobby);
       },
       child: Container(
         decoration: BoxDecoration(
@@ -160,6 +185,77 @@ class _MyHobbiesScreenState extends State<MyHobbiesScreen> {
               ],
             ),
             textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailsView() {
+    return GestureDetector(
+      onTap: _hideHobbyDetails,
+      child: Container(
+        color: Colors.black54, // Semi-transparent background
+        child: Center(
+          child: SingleChildScrollView(
+            child: Card(
+              margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (currentHobby?.image != null && currentHobby!.image!.isNotEmpty)
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                      child: Image.memory(
+                        base64Decode(currentHobby!.image!),
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: 200,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            color: Colors.grey,
+                            height: 200,
+                            child: const Icon(
+                              Icons.image,
+                              size: 100,
+                              color: Colors.white,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      currentHobby!.name,
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  if (currentHobby?.summary != null && currentHobby!.summary.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        currentHobby!.summary,
+                        style: const TextStyle(fontSize: 18),
+                        textAlign: TextAlign.justify,
+                      ),
+                    ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    '(Tap anywhere to close)',
+                    style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
           ),
         ),
       ),

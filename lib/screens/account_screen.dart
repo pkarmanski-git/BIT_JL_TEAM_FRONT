@@ -19,12 +19,12 @@ class AccountScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.settings,
+              Icons.psychology,
               color: Colors.white,
               size: 24,
             ),
             const SizedBox(width: 8),
-            const Text(
+            Text(
               'Account',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -35,7 +35,7 @@ class AccountScreen extends StatelessWidget {
           ],
         ),
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [Colors.teal, Colors.greenAccent],
               begin: Alignment.topLeft,
@@ -60,14 +60,8 @@ class AccountScreen extends StatelessWidget {
                     icon: Icons.settings,
                     title: 'Settings',
                     onTap: () {
-                      if(service.user.profile != null){
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RadarChartWidget(personalityData: service.user.profile!.character),
-                          ),
-                        );
-                      }
+                      // Navigate to the settings screen using the named route
+                      Navigator.pushNamed(context, '/settings');
                     },
                   ),
                   _buildSettingsCard(
@@ -199,6 +193,7 @@ class AccountScreen extends StatelessWidget {
     );
   }
 }
+
 
 
 class MyHobbiesScreen extends StatelessWidget {

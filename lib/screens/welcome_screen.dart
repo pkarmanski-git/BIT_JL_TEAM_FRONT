@@ -17,34 +17,52 @@ class WelcomeScreen extends StatefulWidget {
   State<WelcomeScreen> createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
+class _WelcomeScreenState extends State<WelcomeScreen> with TickerProviderStateMixin {
+  late AnimationController _fadeAnimationController;
   late Animation<double> _fadeAnimation;
+
+  late AnimationController _logoAnimationController;
+  late Animation<double> _logoAnimation;
 
   @override
   void initState() {
     super.initState();
 
-    // Initialize animation controller for fade-in effect
-    _animationController = AnimationController(
+    // Inicjalizacja kontrolera animacji dla efektu fade-in przycisków
+    _fadeAnimationController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
     );
 
-    // Define fade-in animation
+    // Definicja animacji fade-in
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
+      CurvedAnimation(parent: _fadeAnimationController, curve: Curves.easeIn),
     );
 
-    // Start animation after a delay
+    // Inicjalizacja kontrolera animacji dla logo
+    _logoAnimationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+
+    // Definicja animacji skalowania logo
+    _logoAnimation = Tween<double>(begin: 3.0, end: 1.0).animate(
+      CurvedAnimation(parent: _logoAnimationController, curve: Curves.easeOut),
+    );
+
+    // Uruchomienie animacji logo
+    _logoAnimationController.forward();
+
+    // Uruchomienie animacji fade-in po opóźnieniu
     Future.delayed(const Duration(seconds: 2), () {
-      _animationController.forward();
+      _fadeAnimationController.forward();
     });
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _fadeAnimationController.dispose();
+    _logoAnimationController.dispose();
     super.dispose();
   }
 
@@ -53,33 +71,36 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
     return Scaffold(
       body: Stack(
         children: [
-          // Blur effect overlay for background
+          // Efekt rozmycia tła
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 1.0, sigmaY: 1.0),
             child: Container(
               color: Colors.white54.withOpacity(0.1),
             ),
           ),
-          // Main content
+          // Główna zawartość
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                // Logo at the top with Hero animation
+                // Logo z animacją skalowania
                 Hero(
                   tag: 'logo',
-                  child: Image.asset(
-                    'assets/logo.png',
-                    height: 350,
+                  child: ScaleTransition(
+                    scale: _logoAnimation,
+                    child: Image.asset(
+                      'assets/logo.png',
+                      height: 350,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 40),
-                // Fade-in for buttons
+                // Fade-in dla przycisków
                 FadeTransition(
                   opacity: _fadeAnimation,
                   child: Column(
                     children: [
-                      // Log In button
+                      // Przycisk Log In
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40.0),
                         child: ElevatedButton(
@@ -108,7 +129,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                         ),
                       ),
                       const SizedBox(height: 20),
-                      // Register button
+                      // Przycisk Register
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40.0),
                         child: ElevatedButton(

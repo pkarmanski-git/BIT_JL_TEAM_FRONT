@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jl_team_front_bit/screens/welcome_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/splash_screen.dart';
 import 'constants/colors.dart';
@@ -83,7 +84,7 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       ),
-      home: SplashScreen(service: widget.service),
+      home: WelcomeScreen(service: widget.service),
       routes: {
         '/settings': (context) => SettingsScreen(
           isDarkMode: _isDarkMode,
