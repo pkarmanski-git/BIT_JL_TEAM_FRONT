@@ -95,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const SizedBox(height: 70),
+                const SizedBox(height: 40),
                 // Header text
                 Text(
                   'Welcome Back!',
